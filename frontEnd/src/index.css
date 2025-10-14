@@ -68,6 +68,14 @@
   background-color: #5d5491;
 }
 
+.bg-light {
+  background-color: #d2c7ff;
+}
+
+.bg-neon {
+  background-color: #e1fb62;
+}
+
 :root {
   --color-yellow: #ffd230;
   --color-lilac: #d2c7ff;
