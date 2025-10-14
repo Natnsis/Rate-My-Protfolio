@@ -33,7 +33,7 @@ const Heading = ({ page }: PropInterface) => {
   }, [page]);
 
   return (
-    <header className="flex justify-between px-10 pb-3 border-b">
+    <header className="flex justify-between px-10 pb-3 border-b font-poppins">
       <h1 className="text-4xl font-bbh text-primary">R.M.P</h1>
 
       <nav className="flex gap-10 items-center">

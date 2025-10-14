@@ -23,7 +23,7 @@ const Main = () => {
             <div className="flex gap-5 items-center">
               <div>
                 <img
-                  src="/auth.png"
+                  src={p.image}
                   alt="tehe"
                   className="rounded-full w-12 h-12"
                 />
