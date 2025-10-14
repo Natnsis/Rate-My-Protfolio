@@ -18,7 +18,7 @@ const Main = () => {
   return (
     <div>
       {Posts.map((p) => (
-        <div className="bg-white border-1 p-5 rounded-lg mb-5">
+        <div className=" border-1 p-5 rounded-lg mb-5">
           <div>
             <div className="flex gap-5 items-center">
               <div>

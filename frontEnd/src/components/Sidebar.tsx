@@ -2,8 +2,8 @@ import React from "react";
 
 const Sidebar = () => {
   return (
-    <div className="col-span-1 h-full gap-5 ">
-      <div className="h-[40vh] w-full bg-white mt-10 rounded-lg p-5 border-1">
+    <div className="col-span-1 h-full gap-5 border-r-1 pr-5">
+      <div className=" w-full  mt-10 rounded-lg p-5 border-1">
         <img
           src="/auth.png"
           alt="pfp"

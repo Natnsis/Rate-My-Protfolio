@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 const RightSide = () => {
   return (
     <div className="col-span-1 pt-5">
-      <div className="rounded bg-white border-1 w-full p-3">
+      <div className="rounded  border-1 w-full p-3">
         <h1>Post Your Portfolio</h1>
         <form action="" className="flex flex-col gap-5 mt-5">
           <Input placeholder="portfolio Link" />
