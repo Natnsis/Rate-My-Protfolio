@@ -1,13 +1,47 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { Spinner } from "@/components/ui/spinner";
 
 const Register = () => {
+  //form handling
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [image, setImage] = useState<null | File>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleRegister = async (e) => {
+    if (!image) {
+      alert("please select an image");
+    }
+    e.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("image", image!);
+
+    const response = await axios.post(
+      "http://localhost:3000/api/v1/register",
+      formData,
+      { headers: { "Context-type": "multipart/form-data" } }
+    );
+
+    console.log(response);
+    setIsLoading(false);
+  };
+
   return (
     <section className="h-screen w-screen bg-[url('/auth2.png')] bg-cover bg-center flex items-center justify-center">
       <div className="backdrop-blur-lg bg-black/40 border border-white/10 rounded-2xl p-10 sm:p-12 md:p-14 text-white shadow-2xl w-[90%] max-w-md">
-        <div className="flex flex-col gap-5">
+        <form className="flex flex-col gap-5" onSubmit={handleRegister}>
           <h1 className="text-center font-bbh text-4xl font-semibold mb-2">
             Create Account
           </h1>
@@ -20,6 +54,8 @@ const Register = () => {
               <Input
                 id="firstName"
                 placeholder="John"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
               />
             </div>
@@ -30,6 +66,8 @@ const Register = () => {
               <Input
                 id="lastName"
                 placeholder="Doe"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
               />
             </div>
@@ -42,6 +80,8 @@ const Register = () => {
             <Input
               id="email"
               placeholder="example@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
             />
           </div>
@@ -53,7 +93,9 @@ const Register = () => {
             <Input
               id="password"
               type="password"
+              value={password}
               placeholder="••••••••"
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
             />
           </div>
@@ -66,6 +108,11 @@ const Register = () => {
               id="profile"
               type="file"
               accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setImage(e.target.files[0]);
+                }
+              }}
               className="bg-white/10 border-white/20 text-white file:text-white file:bg-white/20 file:border-none file:rounded-md file:px-3 file:py-1 file:cursor-pointer hover:file:bg-white/30"
             />
           </div>
@@ -74,7 +121,14 @@ const Register = () => {
             variant="default"
             className="mt-4 bg-white text-black hover:bg-gray-100 font-semibold"
           >
-            Register
+            {isLoading ? (
+              <span className="flex gap-2 text-gray-400">
+                <Spinner />
+                Registering
+              </span>
+            ) : (
+              "Register"
+            )}
           </Button>
           <p className="text-center">
             Already have an account?{" "}
@@ -82,7 +136,7 @@ const Register = () => {
               Login
             </Link>
           </p>
-        </div>
+        </form>
       </div>
     </section>
   );
