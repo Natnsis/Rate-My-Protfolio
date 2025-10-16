@@ -15,7 +15,7 @@ const Register = () => {
   const [image, setImage] = useState<null | File>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e: React.FormEvent) => {
     if (!image) {
       alert("please select an image");
     }
