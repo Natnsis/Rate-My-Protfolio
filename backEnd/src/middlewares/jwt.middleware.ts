@@ -19,7 +19,7 @@ export const authenticateToken = (
     if (err) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
-    req.user = user; // Attach decoded payload to request
+    req.user = user;
     next();
   });
 };
