@@ -1,25 +1,73 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id            String       @id @default(uuid())
+  email         String       @unique
+  firstName     String
+  lastName      String?
+  passwordHash  String
+  avatarUrl     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime?    @updatedAt
+
+  // Relationships
+  portfolios    Portfolio[]
+  likes         Like[]
+  comments      Comment[]
 }
 
-model Post {
-  id       Int    @id @default(autoincrement())
-  title    String
-  content  String?
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId Int
+model Portfolio {
+  id            String        @id @default(uuid())
+  userId        String
+  description   String
+  url           String
+  createdAt     DateTime      @default(now())
+
+  // Relationships
+  owner         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes         Like[]
+  comments      Comment[]
+  aiRoasts      AiRoast[]
+}
+
+model Like {
+  id            String     @id @default(uuid())
+  portfolioId   String
+  userId        String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime?  @updatedAt
+
+  // Relationships
+  portfolio     Portfolio  @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id            String     @id @default(uuid())
+  portfolioId   String
+  userId        String
+  content       String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime?  @updatedAt
+
+  // Relationships
+  portfolio     Portfolio  @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AiRoast {
+  id            String     @id @default(uuid())
+  portfolioId   String
+  roastText     String
+  createdAt     DateTime   @default(now())
+
+  // Relationships
+  portfolio     Portfolio  @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
 }

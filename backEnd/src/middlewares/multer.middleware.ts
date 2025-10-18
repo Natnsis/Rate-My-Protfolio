@@ -1,25 +1,12 @@
-import { Request } from 'express';
-import multer from 'multer';
 import streamifier from 'streamifier';
+import { v2 as cloudinary } from 'cloudinary';
 
-// Store file in memory (no disk writes)
-const storage = multer.memoryStorage();
-
-export const upload = multer({
-  storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10 MB
-  },
-  fileFilter: (_req: Request, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
-    }
-  },
-});
-
-// Convert Buffer → Readable Stream (for Cloudinary)
-export const bufferToStream = (buffer: Buffer) => {
-  return streamifier.createReadStream(buffer);
+export const ImageUploader = (bufferImage: Buffer) => {
+  return new Promise((reject, resolved) => {
+    const stream = cloudinary.uploader.upload_stream((err, result) => {
+      if (err) return reject(err);
+      resolved(result);
+    });
+    streamifier.createReadStream(bufferImage).pipe(stream);
+  });
 };

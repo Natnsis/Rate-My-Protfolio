@@ -1,13 +1,11 @@
 import { Router } from 'express';
-import { login, getProfile } from '../controllers/auth.controller';
-import { authenticateToken } from '../middlewares/jwt.middleware';
+import multer from 'multer';
+import { register } from '../controllers/auth.controller';
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const router = Router();
-
-// Public route
-router.post('/login', login);
-
-// Protected route
-router.get('/profile', authenticateToken, getProfile);
+router.post('/register', upload.single('image'), register);
 
 export default router;
