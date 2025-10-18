@@ -17,7 +17,7 @@ const App = () => {
   return (
     <section className="pt-5 px-20">
       {/* heading */}
-      <header className="flex justify-between border-b-1 pt-8 pb-5">
+      <header className="flex justify-between border-b-1 pb-5">
         <h1 className="font-quintessential text-4xl">
           R.<span className="text-primary">M</span>.P
         </h1>
@@ -44,7 +44,7 @@ const App = () => {
       </header>
 
       {/* hero */}
-      <main className="px-5  pt-10">
+      <main className="px-5">
         <div className="flex gap-5 py-5">
           <div>
             <p className="text-6xl font-poppins uppercase">Get Real Feedback</p>

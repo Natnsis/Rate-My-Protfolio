@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import AuthRoute from './routes/auth.routes';
+import PostRoute from './routes/post.routes';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 //routes
 app.use('/api/v1', AuthRoute);
+app.use('/api/v1', PostRoute);
 
 const PORT = process.env.PORT;
 
