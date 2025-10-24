@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Bookmark, MessageCircle, Share2, ThumbsUp } from "lucide-react";
-import { Posts } from "@/constants/posts";
 import {
   Dialog,
   DialogClose,
@@ -13,73 +12,118 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
+import { usePostStore } from "@/store/OtherStore";
+import { useUserStore } from "@/store/UserStore";
+
+interface User {
+  id: string;
+  name: string;
+  avatar: string;
+}
 
 const Main = () => {
+  const fetchPosts = usePostStore((s) => s.fetchPosts);
+  const posts = usePostStore((s) => s.posts) || [];
+
+  const getUser = useUserStore((s) => s.getUser);
+
+  const [users, setUsers] = useState<Record<string, User>>({});
+
+  // Fetch posts on mount
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  // Fetch users for all posts
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      const userData: Record<string, User> = {};
+      for (const post of posts) {
+        if (!users[post.userId]) {
+          const user = await getUser(post.userId);
+          userData[post.userId] = user;
+        }
+      }
+      setUsers((prev) => ({ ...prev, ...userData }));
+    };
+
+    if (posts.length) fetchAllUsers();
+  }, [posts, getUser, users]);
+
   return (
-    <div>
-      {Posts.map((p) => (
-        <div className=" border-1 p-5 rounded-lg mb-5">
-          <div>
-            <div className="flex gap-5 items-center">
-              <div>
-                <img
-                  src={p.image}
-                  alt="tehe"
-                  className="rounded-full w-12 h-12"
-                />
-              </div>
-              <h1 className="font-bold text-xl">{p.name}</h1>
+    <div className="space-y-5">
+      {posts.map((post) => {
+        const user = users[post.userId];
+        return (
+          <div key={post.id} className="border p-5 rounded-lg">
+            {/* User info */}
+            <div className="flex items-center gap-4 mb-3">
+              <img
+                src={user?.avatar || "/default-avatar.png"}
+                alt={user?.name || "user"}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <h1 className="font-bold text-lg">
+                {user?.name || "Loading..."}
+              </h1>
             </div>
-          </div>
-          <p className="pt-2">{p.content}</p>
-          <div>
-            <img src="auth.png" alt="poster" className="h-[50vh] w-full" />
-          </div>
-          <div className="mt-5 border-t-1 flex justify-between p-5">
-            <Button variant="outline">
-              <ThumbsUp /> Like
-            </Button>
-            <Button variant="outline">
-              <Bookmark /> Save
-            </Button>
-            <Button variant="outline">
-              <Share2 /> Visit
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="link">
-                  <Button>
+
+            {/* Post content */}
+            <p className="mb-3">{post.description}</p>
+            <div className="mb-3">
+              <img
+                src={post.url}
+                alt="portfolio"
+                className="w-full max-h-[50vh] object-contain rounded-lg border"
+                onError={(e) => {
+                  e.currentTarget.src = "/default-portfolio.png";
+                }}
+              />
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex justify-between border-t pt-3 mt-3">
+              <Button variant="outline" className="flex items-center gap-2">
+                <ThumbsUp /> Like
+              </Button>
+              <Button variant="outline" className="flex items-center gap-2">
+                <Bookmark /> Save
+              </Button>
+              <Button variant="outline" className="flex items-center gap-2">
+                <Share2 /> Visit
+              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="link" className="flex items-center gap-2">
                     <MessageCircle /> Review
                   </Button>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>write a review</DialogTitle>
-                  <DialogDescription>
-                    Write what you feel about the Portfolio
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4">
-                  <div className="grid gap-3">
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Write a review</DialogTitle>
+                    <DialogDescription>
+                      Write what you feel about the portfolio
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4">
                     <Input
-                      id="name-1"
-                      name="name"
-                      defaultValue="I LIKE IT!, KEEP IT UP"
+                      id="review"
+                      name="review"
+                      defaultValue="I LIKE IT! KEEP IT UP"
                     />
                   </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button type="submit">Send</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Send</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

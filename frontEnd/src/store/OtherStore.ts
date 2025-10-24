@@ -6,7 +6,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-type PostTypes = {
+export type PostTypes = {
   id: string;
   userId: string;
   description: string;

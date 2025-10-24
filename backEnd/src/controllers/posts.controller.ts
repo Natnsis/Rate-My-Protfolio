@@ -6,16 +6,22 @@ const prisma = new PrismaClient();
 export const addPost = async (req: Request, res: Response) => {
   try {
     const { userId, description, url } = req.body;
-    await prisma.portfolio.create({
+    const newPortfolio = await prisma.portfolio.create({
       data: {
-        userId,
         description,
         url,
+        userId,
       },
     });
-    return res.status(201).json({ message: 'portfolio posted successfully' });
+
+    return res.status(201).json({
+      message: 'Portfolio posted successfully',
+      portfolio: newPortfolio,
+    });
   } catch (e) {
-    res.status(500).json({ message: 'internal error has occurred' });
+    return res.status(500).json({
+      error: 'An unexpected server error occurred.',
+    });
   }
 };
 
