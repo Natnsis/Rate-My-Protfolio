@@ -11,6 +11,8 @@ import { Award, Bot, House, Mail } from "lucide-react";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/AuthStore";
+import { useUserStore } from "@/store/UserStore";
 
 const iconBase = "flex flex-col justify-center items-center cursor-pointer";
 type PageName = "home" | "message" | "leaderboards" | "ai";
@@ -20,10 +22,21 @@ interface PropInterface {
 }
 
 const Heading = ({ page }: PropInterface) => {
+  const handleLogout = () => {};
+  const user = useAuthStore((s) => s.user);
+  const id = user?.id;
+  const data = useUserStore((s) => s.user);
+  const getUser = useUserStore((s) => s.getUser);
   const [isHome, setIsHome] = useState(false);
   const [isMessages, setIsMessages] = useState(false);
   const [isLeaderboards, setIsLeaderboards] = useState(false);
   const [isAi, setIsAi] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      getUser(id);
+    }
+  }, [id]);
 
   useEffect(() => {
     setIsHome(page === "home");
@@ -31,6 +44,8 @@ const Heading = ({ page }: PropInterface) => {
     setIsLeaderboards(page === "leaderboards");
     setIsAi(page === "ai");
   }, [page]);
+
+  console.log(data);
 
   return (
     <header className="flex justify-between px-10 pb-3 border-b font-poppins">
@@ -82,17 +97,14 @@ const Heading = ({ page }: PropInterface) => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={data?.avatarUrl ?? "/auth.png"} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{data?.firstName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem className="text-center">Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </nav>

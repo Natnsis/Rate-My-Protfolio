@@ -65,3 +65,13 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const fetchUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.body;
+    const user = await prisma.user.findUnique({ where: { id } });
+    return res.status(200).json(user);
+  } catch (e) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};

@@ -1,4 +1,3 @@
-// ...existing code...
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
@@ -10,6 +9,7 @@ export type UserData = {
 };
 
 export type TokenPayload = {
+  id: string;
   userId: string;
   role: string;
   exp: number;
@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthStore>()(
 
       login: async (userData: UserData) => {
         try {
-          const res = await api.post("/api/v1/login", userData);
+          const res = await api.post("/login", userData);
           const token = res.data.accessToken;
           const user = jwtDecode<TokenPayload>(token);
           set({ token, user, error: null });
@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthStore>()(
 
       register: async (userData: FormData) => {
         try {
-          const res = await api.post("/api/v1/register", userData, {
+          const res = await api.post("/register", userData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
           console.log("register response:", res.data);
@@ -78,7 +78,7 @@ export const useAuthStore = create<AuthStore>()(
 
       logout: async () => {
         try {
-          await api.post("/auth/v1/logout");
+          await api.post("/logout");
         } catch (err) {
           console.warn("Logout request failed:", err);
         }
@@ -87,7 +87,7 @@ export const useAuthStore = create<AuthStore>()(
 
       refresh: async () => {
         try {
-          const res = await api.post("/api/v1/refresh");
+          const res = await api.post("/refresh");
           const token = res.data.accessToken;
           const user = jwtDecode<TokenPayload>(token);
           set({ token, user });

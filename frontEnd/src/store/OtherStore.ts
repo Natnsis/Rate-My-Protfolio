@@ -1,0 +1,73 @@
+import { create } from "zustand";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
+});
+
+type PostTypes = {
+  id: string;
+  userId: string;
+  description: string;
+  url: string;
+  createdAt: Date;
+};
+
+type usePostStoreTypes = {
+  posts: PostTypes[] | null;
+  error: string | null;
+  fetchPosts: () => Promise<void>;
+  addPosts: (data: PostTypes) => Promise<void>;
+  deletePosts: (id: string) => Promise<void>;
+  updatePosts: (id: string, data: Partial<PostTypes>) => Promise<void>;
+};
+
+export const usePostStore = create<usePostStoreTypes>((set, get) => ({
+  posts: [],
+  error: null,
+
+  fetchPosts: async () => {
+    try {
+      const response = await api.get<PostTypes[]>("/posts");
+      set({ posts: response.data, error: null });
+    } catch (e: any) {
+      console.log(e);
+      set({ error: e.message });
+    }
+  },
+
+  addPosts: async (data: PostTypes) => {
+    try {
+      const response = await api.post<PostTypes>("/posts", data);
+      set({ posts: [...(get().posts || []), response.data] });
+    } catch (e: any) {
+      console.log(e);
+      set({ error: e.message });
+    }
+  },
+
+  deletePosts: async (id: string) => {
+    try {
+      await api.delete(`/posts/${id}`);
+      set({ posts: (get().posts || []).filter((post) => post.id !== id) });
+    } catch (e: any) {
+      console.log(e);
+      set({ error: e.message });
+    }
+  },
+
+  updatePosts: async (id: string, data: Partial<PostTypes>) => {
+    try {
+      const response = await api.put<PostTypes>(`/posts/${id}`, data);
+      set({
+        posts: (get().posts || []).map((post) =>
+          post.id === id ? response.data : post
+        ),
+      });
+    } catch (e: any) {
+      console.log(e);
+      set({ error: e.message });
+    }
+  },
+}));
