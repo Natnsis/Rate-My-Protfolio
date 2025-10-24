@@ -4,12 +4,12 @@ import { persist } from "zustand/middleware";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-type UserData = {
+export type UserData = {
   email: string;
   password: string;
 };
 
-type TokenPayload = {
+export type TokenPayload = {
   userId: string;
   role: string;
   exp: number;
@@ -24,7 +24,7 @@ export type RegisterData = {
   image: File;
 };
 
-type AuthStore = {
+export type AuthStore = {
   token: string | null;
   user: TokenPayload | null;
   error: string | null;
