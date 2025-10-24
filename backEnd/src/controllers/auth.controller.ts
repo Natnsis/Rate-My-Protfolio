@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import { ImageUploader } from '../middlewares/multer.middleware';
 import { generateToken } from '../middlewares/jwt.middleware';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -10,15 +11,17 @@ interface uploadedImage {
   secure_url: string;
 }
 
+// auth.controller.ts
 export const register = async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, email, password } = req.body;
     if (!firstName || !lastName || !email || !password)
-      return res.status(404).json({ message: 'credentials missing' });
+      return res.status(400).json({ message: 'credentials missing' });
     const hashedPassword = await bcrypt.hash(password, 10);
-    if (!req.file) return res.json({ message: 'the file is not uploaded' });
+    if (!req.file)
+      return res.status(400).json({ message: 'the file is not uploaded' });
     const uploaded = (await ImageUploader(req.file.buffer)) as uploadedImage;
-    prisma.user.create({
+    await prisma.user.create({
       data: {
         firstName,
         lastName,
@@ -27,8 +30,12 @@ export const register = async (req: Request, res: Response) => {
         avatarUrl: uploaded.secure_url,
       },
     });
-    res.status(201).json({ message: 'message uploaded successfully' });
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (e) {
+    console.error('Registration Error:', e);
+    if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
+      return res.status(409).json({ message: 'Email already in use.' });
+    }
     res.status(500).json({ message: 'server error' });
   }
 };

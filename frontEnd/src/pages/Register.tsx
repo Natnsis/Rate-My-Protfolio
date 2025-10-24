@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
 import { Spinner } from "@/components/ui/spinner";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/AuthStore";
+
+type AlertType = "success" | "error" | null;
 
 const Register = () => {
-  //form handling
+  // form state
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -15,32 +17,102 @@ const Register = () => {
   const [image, setImage] = useState<null | File>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    if (!image) {
-      alert("please select an image");
+  // alert state (shown on the form)
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(null);
+  const [visible, setVisible] = useState<boolean>(false);
+
+  const register = useAuthStore((s) => s.register);
+  const storeError = useAuthStore((s) => s.error);
+
+  // show store-level errors as form alert
+  useEffect(() => {
+    if (storeError) {
+      showAlert(storeError, "error");
+      useAuthStore.setState({ error: null });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeError]);
+
+  const showAlert = (
+    message: string,
+    type: AlertType = "success",
+    timeout = 5000
+  ) => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setVisible(true);
+    if (timeout > 0) {
+      window.setTimeout(() => setVisible(false), timeout);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+
+    if (!image) {
+      showAlert("Please select an image", "error");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("image", image!);
+    formData.append("image", image);
 
-    const response = await axios.post(
-      "http://localhost:3000/api/v1/register",
-      formData,
-      { headers: { "Context-type": "multipart/form-data" } }
-    );
-
-    console.log(response);
-    setIsLoading(false);
+    setIsLoading(true);
+    try {
+      const messageOrData = await register(formData);
+      const message =
+        typeof messageOrData === "string"
+          ? messageOrData
+          : messageOrData?.message || "Registered successfully";
+      showAlert(message, "success");
+      // reset form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setImage(null);
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        (err instanceof Error ? err.message : "Registration failed");
+      showAlert(msg, "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <section className="h-screen w-screen bg-[url('/auth2.png')] bg-cover bg-center flex items-center justify-center">
       <div className="backdrop-blur-lg bg-black/40 border border-white/10 rounded-2xl p-10 sm:p-12 md:p-14 text-white shadow-2xl w-[90%] max-w-md">
+        {/* Inline alert shown on the form */}
+        {visible && alertType && (
+          <div
+            role="alert"
+            className={`mb-4 px-4 py-3 rounded-md text-sm ${
+              alertType === "success"
+                ? "bg-green-600/90 text-white"
+                : "bg-red-600/90 text-white"
+            }`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>{alertMessage}</div>
+              <button
+                type="button"
+                aria-label="Dismiss"
+                onClick={() => setVisible(false)}
+                className="opacity-90 hover:opacity-100"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         <form className="flex flex-col gap-5" onSubmit={handleRegister}>
           <h1 className="text-center font-bbh text-4xl font-semibold mb-2">
             Create Account
@@ -120,6 +192,7 @@ const Register = () => {
           <Button
             variant="default"
             className="mt-4 bg-white text-black hover:bg-gray-100 font-semibold"
+            disabled={isLoading}
           >
             {isLoading ? (
               <span className="flex gap-2 text-gray-400">
@@ -130,6 +203,7 @@ const Register = () => {
               "Register"
             )}
           </Button>
+
           <p className="text-center">
             Already have an account?{" "}
             <Link to="/login" className="text-primary">
