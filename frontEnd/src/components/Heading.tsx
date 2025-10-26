@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/AuthStore";
 import { useUserStore } from "@/store/UserStore";
-
 const iconBase = "flex flex-col justify-center items-center cursor-pointer";
 type PageName = "home" | "message" | "leaderboards" | "ai";
 
@@ -22,21 +21,21 @@ interface PropInterface {
 }
 
 const Heading = ({ page }: PropInterface) => {
-  const handleLogout = () => {};
   const user = useAuthStore((s) => s.user);
   const id = user?.id;
-  const data = useUserStore((s) => s.user);
-  const getUser = useUserStore((s) => s.getUser);
   const [isHome, setIsHome] = useState(false);
   const [isMessages, setIsMessages] = useState(false);
   const [isLeaderboards, setIsLeaderboards] = useState(false);
   const [isAi, setIsAi] = useState(false);
+  const fetchUser = useUserStore((s) => s.getUser);
+  const data = useUserStore((s) => s.user);
 
   useEffect(() => {
-    if (id) {
-      getUser(id);
+    if (!id) {
+      alert("User ID is undefined");
     }
-  }, [id]);
+    fetchUser(id!);
+  }, [id, fetchUser]);
 
   useEffect(() => {
     setIsHome(page === "home");
@@ -44,8 +43,6 @@ const Heading = ({ page }: PropInterface) => {
     setIsLeaderboards(page === "leaderboards");
     setIsAi(page === "ai");
   }, [page]);
-
-  console.log(data);
 
   return (
     <header className="flex justify-between px-10 pb-3 border-b font-poppins">
@@ -97,12 +94,14 @@ const Heading = ({ page }: PropInterface) => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src={data?.avatarUrl ?? "/auth.png"} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={data?.avatarUrl} />
+              <AvatarFallback>RMP</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>{data?.firstName}</DropdownMenuLabel>
+            <DropdownMenuLabel className="capitalize">
+              {data?.firstName} {data?.lastName}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-center">Logout</DropdownMenuItem>
           </DropdownMenuContent>

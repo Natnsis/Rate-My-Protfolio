@@ -4,7 +4,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
-  timeout: 10000, 
+  timeout: 10000,
 });
 
 export type UserData = {
@@ -29,7 +29,7 @@ export const useUserStore = create<UserStoreTypes>((set) => ({
 
   getUser: async (id: string) => {
     try {
-      const res = await api.post("/api/v1/user", { id });
+      const res = await api.post("/user", { id });
 
       if (res.status === 200 && res.data) {
         set({ user: res.data, error: null });

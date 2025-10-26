@@ -13,8 +13,11 @@ const Comment = () => {
         <main className="col-span-3 overflow-auto p-5 h-[85vh]">
           <div>
             <h1 className="text-2xl font-bbh">Comments On Your Portfolio </h1>
-            {Comments.map((c) => (
-              <div className="border border-border rounded-xl my-5 p-5 bg-muted/30 hover:bg-muted/40 transition-all">
+            {Comments.map((c, index) => (
+              <div
+                className="border border-border rounded-xl my-5 p-5 bg-muted/30 hover:bg-muted/40 transition-all"
+                key={index}
+              >
                 <h1 className="font-semibold text-lg text-primary">{c.name}</h1>
                 <p className="border-y border-border py-4 text-sm text-muted-foreground leading-relaxed mt-2">
                   {c.comment}

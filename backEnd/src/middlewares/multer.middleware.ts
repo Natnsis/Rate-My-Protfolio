@@ -1,4 +1,6 @@
 import streamifier from 'streamifier';
+import dotenv from 'dotenv';
+dotenv.config();
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 
 export const ImageUploader = (

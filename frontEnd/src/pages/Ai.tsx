@@ -1,6 +1,5 @@
 import Heading from "@/components/Heading";
 import Sidebar from "@/components/Sidebar";
-import React from "react";
 
 const Ai = () => (
   <section className="h-screen">
