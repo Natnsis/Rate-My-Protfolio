@@ -6,12 +6,13 @@ const prisma = new PrismaClient();
 export const sendComment = async (req: Request, res: Response) => {
   try {
     const id: string = req.params.id;
-    const { content, userId } = req.body;
+    const { content, userId, receiverId } = req.body;
     await prisma.comment.create({
       data: {
         portfolioId: id,
         content,
         userId,
+        receiverId,
       },
     });
     res.status(201).json({ message: 'comment sent successfully ' });
