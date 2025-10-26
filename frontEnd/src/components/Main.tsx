@@ -14,10 +14,25 @@ import { Input } from "./ui/input";
 import { useEffect, useState } from "react";
 import { usePostStore, usePosterStore } from "@/store/OtherStore";
 
+type User = {
+  id: string;
+  avatarUrl: string;
+  firstName: string;
+  lastName: string;
+};
+type Post = {
+  id: string;
+  userId: string;
+  description: string;
+  createdAt: Date;
+  url: string;
+  user: User;
+};
+
 const Main = () => {
   const fetchPosts = usePostStore((s) => s.fetchPosts);
   const getUsers = usePosterStore((s) => s.getUser);
-  const [postUsers, setPostUsers] = useState([]);
+  const [postUsers, setPostUsers] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,11 +69,12 @@ const Main = () => {
   if (postUsers.length === 0)
     return <p className="text-center text-gray-500">No posts available</p>;
 
+  console.log(postUsers);
+
   return (
     <div className="space-y-5">
       {postUsers.map((p) => (
         <div key={p.id} className="border p-5 rounded-lg">
-          {/* --- Header: user info --- */}
           <div className="flex items-center gap-4 mb-3">
             <img
               src={p.user?.avatarUrl || "/default-avatar.png"}
@@ -72,10 +88,8 @@ const Main = () => {
             </h1>
           </div>
 
-          {/* --- Description --- */}
           <p className="mb-3">{p.description}</p>
 
-          {/* --- Portfolio Preview with untouchable iframe --- */}
           <div className="relative mb-3 rounded-lg overflow-hidden border">
             <iframe
               src={p.url}
@@ -83,11 +97,9 @@ const Main = () => {
               sandbox=""
               loading="lazy"
             />
-            {/* Overlay to block interactions */}
             <div className="absolute inset-0 bg-transparent pointer-events-auto" />
           </div>
 
-          {/* --- Actions --- */}
           <div className="flex justify-between border-t pt-3 mt-3">
             <Button variant="outline" className="flex items-center gap-2">
               <ThumbsUp /> Like
@@ -103,7 +115,6 @@ const Main = () => {
               <Share2 /> Visit
             </Button>
 
-            {/* --- Review Dialog --- */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="link" className="flex items-center gap-2">
