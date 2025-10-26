@@ -53,6 +53,7 @@ model Comment {
   id            String     @id @default(uuid())
   portfolioId   String
   userId        String
+  receiverId    String
   content       String
   createdAt     DateTime   @default(now())
   updatedAt     DateTime?  @updatedAt

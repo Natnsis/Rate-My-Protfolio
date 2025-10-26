@@ -69,8 +69,6 @@ const Main = () => {
   if (postUsers.length === 0)
     return <p className="text-center text-gray-500">No posts available</p>;
 
-  console.log(postUsers);
-
   return (
     <div className="space-y-5">
       {postUsers.map((p) => (
