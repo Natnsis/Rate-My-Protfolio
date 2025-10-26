@@ -72,6 +72,7 @@ export const usePostStore = create<usePostStoreTypes>((set, get) => ({
   },
 }));
 
+//user data for Main page
 export type UserData = {
   id: string;
   email: string;
@@ -110,6 +111,54 @@ export const usePosterStore = create<UserStoreTypes>((set) => ({
         error: err?.response?.data?.message || "An unexpected error occurred.",
       });
       return null;
+    }
+  },
+}));
+
+//liking and disliking a post
+type Likes = {
+  id: string;
+  portfolioId: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type UseReactionStore = {
+  likes: Likes[];
+  error: null | string | unknown;
+  addLike: (data: Data) => Promise<void>;
+  removeLike: (data: Data) => Promise<void>;
+};
+
+type Data = {
+  id: string;
+  userId: string;
+};
+
+const UseReactionStore = create<UseReactionStore>((set, get) => ({
+  likes: [],
+  error: null,
+  addLike: async (data: Data) => {
+    try {
+      const { id, userId } = data;
+      const res = await axios.post(`/likes/${id}`, userId);
+      set({ error: null });
+      return res.data;
+    } catch (e) {
+      console.log(e);
+      set({ error: e });
+    }
+  },
+  removeLike: async (data: Data) => {
+    try {
+      const { id, userId } = data;
+      const res = await axios.delete(`/likes/${id}`, { data: { userId } });
+      set({ error: null });
+      return res.data;
+    } catch (e) {
+      console.log(e);
+      set({ error: e });
     }
   },
 }));

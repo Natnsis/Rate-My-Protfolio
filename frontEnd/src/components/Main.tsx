@@ -64,6 +64,8 @@ const Main = () => {
     fetchData();
   }, [fetchPosts, getUsers]);
 
+  const handleLikeToggle = () => {};
+
   if (loading)
     return <p className="text-center text-gray-500">Loading posts...</p>;
   if (postUsers.length === 0)
@@ -99,7 +101,11 @@ const Main = () => {
           </div>
 
           <div className="flex justify-between border-t pt-3 mt-3">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={handleLikeToggle}
+            >
               <ThumbsUp /> Like
             </Button>
             <Button variant="outline" className="flex items-center gap-2">
