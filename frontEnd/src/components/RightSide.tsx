@@ -9,7 +9,6 @@ const RightSide = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
-  const fetchPosts = usePostStore((s) => s.fetchPosts);
 
   const addPost = usePostStore((s) => s.addPosts);
   const { id } = useAuthStore((s) => s.user);
@@ -33,7 +32,7 @@ const RightSide = () => {
       // Clear form
       setLink("");
       setDescription("");
-      fetchPosts();
+      window.location.href = "https://rate-my-protfolio.vercel.app";
     }
   };
 
