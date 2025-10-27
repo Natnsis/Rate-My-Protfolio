@@ -5,20 +5,13 @@ import { useCommentStore } from "@/store/OtherStore";
 import { useEffect } from "react";
 
 const Comment = () => {
-  // Comment store
   const getComments = useCommentStore((s) => s.getComments);
   const comments = useCommentStore((s) => s.comments);
-
-  // Auth store
   const user = useAuthStore((s) => s.user);
   const userId = user?.id;
-
-  // Fetch comments for the logged-in user
   useEffect(() => {
     if (userId) getComments(userId);
   }, [getComments, userId]);
-
-  // Filter only comments where the logged-in user is the receiver
   const filteredComments = comments.filter((c) => c.id === userId);
 
   return (

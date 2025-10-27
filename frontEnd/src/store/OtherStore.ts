@@ -15,8 +15,10 @@ export type PostTypes = {
 };
 
 type usePostStoreTypes = {
+  post: PostTypes | null;
   posts: PostTypes[] | null;
   error: string | null;
+  fetchPost: (id: string) => Promise<void>;
   fetchPosts: () => Promise<void>;
   addPosts: (data: PostTypes) => Promise<void>;
   deletePosts: (id: string) => Promise<void>;
@@ -25,7 +27,18 @@ type usePostStoreTypes = {
 
 export const usePostStore = create<usePostStoreTypes>((set, get) => ({
   posts: [],
+  post: null,
   error: null,
+
+  fetchPost: async (id: string) => {
+    try {
+      const response = await api.get<PostTypes>(`/posts/${id}`);
+      set({ post: response.data, error: null });
+    } catch (e: any) {
+      console.log(e);
+      set({ error: e.message });
+    }
+  },
 
   fetchPosts: async () => {
     try {
