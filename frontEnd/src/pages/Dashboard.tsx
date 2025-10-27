@@ -6,22 +6,27 @@ import Sidebar from "@/components/Sidebar";
 const Dashboard = () => {
   return (
     <section className="h-screen">
-      <div className="sticky top-5 pb-5">
+      <div className="sticky top-5 pb-5 z-10">
         <Heading page="home" />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 p-5 md:px-20 h-full">
-        <div className="hidden md:block">
-          <Sidebar />
-        </div>
-
-        <div className="order-first md:order-none col-span-1 md:col-span-1">
+      <div className="h-[calc(100vh-80px)] p-5 md:px-10 lg:px-20">
+        <div className="flex flex-col gap-8 lg:hidden">
           <RightSide />
-        </div>
-
-        <main className="order-last md:order-none col-span-1 md:col-span-2 overflow-auto p-5 h-[85vh]">
           <Main />
-        </main>
+        </div>
+        <div className="hidden lg:grid lg:grid-cols-4 lg:gap-8 h-full">
+          <div>
+            <Sidebar />
+          </div>
+          <main className="col-span-2 flex justify-center h-full md:h-[80vh]">
+            <div className="w-full max-w-2xl h-full overflow-auto py-4">
+              <Main />
+            </div>
+          </main>
+          <div>
+            <RightSide />
+          </div>
+        </div>
       </div>
     </section>
   );
