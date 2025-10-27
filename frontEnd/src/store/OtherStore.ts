@@ -20,7 +20,7 @@ type usePostStoreTypes = {
   error: string | null;
   fetchPost: (id: string) => Promise<void>;
   fetchPosts: () => Promise<void>;
-  addPosts: (data: PostTypes) => Promise<void>;
+  addPosts: (data: PostTypes) => Promise<boolean>;
   deletePosts: (id: string) => Promise<void>;
   updatePosts: (id: string, data: Partial<PostTypes>) => Promise<void>;
 };
@@ -53,10 +53,13 @@ export const usePostStore = create<usePostStoreTypes>((set, get) => ({
   addPosts: async (data: PostTypes) => {
     try {
       const response = await api.post<PostTypes>("/posts", data);
-      set({ posts: [...(get().posts || []), response.data] });
+      // Put the new post at the beginning
+      set({ posts: [response.data, ...(get().posts || [])], error: null });
+      return true; // indicate success
     } catch (e: any) {
-      console.log(e);
+      console.error("Failed to add post:", e);
       set({ error: e.message });
+      return false; // indicate failure
     }
   },
 
