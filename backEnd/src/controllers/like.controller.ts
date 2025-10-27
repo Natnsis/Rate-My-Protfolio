@@ -49,3 +49,14 @@ export const unlikePost = async (req: Request, res: Response) => {
     return res.status(500).json({ error: e });
   }
 };
+
+export const likes = async (req: Request, res: Response) => {
+  try {
+    const data = await prisma.like.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    res.status(200).json(data);
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+};

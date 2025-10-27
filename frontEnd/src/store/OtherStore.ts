@@ -126,39 +126,67 @@ type Likes = {
 
 type UseReactionStore = {
   likes: Likes[];
-  error: null | string | unknown;
-  addLike: (data: Data) => Promise<void>;
-  removeLike: (data: Data) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+  toggleLike: (postId: string, userId: string) => Promise<void>;
+  getLikes: () => Promise<void>;
 };
 
-type Data = {
-  id: string;
-  userId: string;
-};
-
-const UseReactionStore = create<UseReactionStore>((set, get) => ({
+export const useReactionStore = create<UseReactionStore>((set, get) => ({
   likes: [],
+  loading: false,
   error: null,
-  addLike: async (data: Data) => {
+
+  getLikes: async () => {
+    set({ loading: true, error: null });
     try {
-      const { id, userId } = data;
-      const res = await axios.post(`/likes/${id}`, userId);
-      set({ error: null });
-      return res.data;
-    } catch (e) {
-      console.log(e);
-      set({ error: e });
+      const res = await api.get("/likes");
+      const data = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
+      set({ likes: data, loading: false });
+    } catch (err: any) {
+      console.error("getLikes error:", err);
+      set({
+        error: err?.response?.data?.message || "Failed to load likes",
+        loading: false,
+      });
     }
   },
-  removeLike: async (data: Data) => {
+
+  toggleLike: async (postId: string, userId: string) => {
+    const prevLikes = get().likes;
+    const isLiked = prevLikes.some(
+      (like) => like.userId === userId && like.portfolioId === postId
+    );
+
+    if (isLiked) {
+      set({
+        likes: prevLikes.filter(
+          (like) => !(like.userId === userId && like.portfolioId === postId)
+        ),
+      });
+    } else {
+      const optimisticLike: Likes = {
+        id: crypto.randomUUID(),
+        portfolioId: postId,
+        userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      set({ likes: [...prevLikes, optimisticLike] });
+    }
+
     try {
-      const { id, userId } = data;
-      const res = await axios.delete(`/likes/${id}`, { data: { userId } });
-      set({ error: null });
-      return res.data;
-    } catch (e) {
-      console.log(e);
-      set({ error: e });
+      if (isLiked) {
+        await api.delete(`/likes/${postId}`, { data: { userId } });
+      } else {
+        await api.post(`/likes/${postId}`, { userId });
+      }
+    } catch (err: any) {
+      console.error("toggleLike sync error:", err);
+      set({
+        likes: prevLikes,
+        error: err?.response?.data?.message || "Failed to toggle like",
+      });
     }
   },
 }));
