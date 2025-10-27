@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Bookmark, MessageCircle, Share2, ThumbsUp } from "lucide-react";
+import { MessageCircle, Share2, ThumbsUp } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -11,8 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
+  useCommentStore,
   usePostStore,
   usePosterStore,
   useReactionStore,
@@ -36,20 +37,19 @@ type Post = {
 };
 
 const Main = () => {
+  const [commentText, setCommentText] = useState("");
+  const postComments = useCommentStore((s) => s.sendComments);
+
   const fetchPosts = usePostStore((s) => s.fetchPosts);
   const getUsers = usePosterStore((s) => s.getUser);
-
-  // Reaction store
   const { likes, toggleLike, getLikes } = useReactionStore();
 
-  // Auth
   const user = useAuthStore((s) => s.user);
   const userId = user?.id;
 
   const [postUsers, setPostUsers] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /** Fetch posts + likes + their users */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,7 +63,6 @@ const Main = () => {
           return;
         }
 
-        // attach users to each post
         const postsWithUsers = await Promise.all(
           fetchedPosts.map(async (p) => {
             const user = await getUsers(p.userId);
@@ -82,7 +81,6 @@ const Main = () => {
     fetchData();
   }, [fetchPosts, getUsers, getLikes]);
 
-  /** UI states */
   if (loading)
     return <p className="text-center text-gray-500">Loading posts...</p>;
 
@@ -97,7 +95,10 @@ const Main = () => {
         );
 
         const handleLike = async () => {
-          if (!userId) return;
+          if (!userId) {
+            alert("Please log in to like posts.");
+            return;
+          }
           try {
             await toggleLike(p.id, userId);
           } catch (err) {
@@ -105,9 +106,32 @@ const Main = () => {
           }
         };
 
+        const handleSendComment = async (
+          e: FormEvent,
+          closeDialog: () => void
+        ) => {
+          e.preventDefault();
+          if (!userId) return alert("Please log in to comment.");
+          if (!commentText.trim()) return;
+
+          try {
+            await postComments(p.id, {
+              content: commentText,
+              userId,
+              receiverId: p.userId,
+            });
+            setCommentText("");
+            alert("Comment sent successfully!");
+            closeDialog();
+          } catch (err) {
+            console.error("Failed to send comment:", err);
+            alert("Failed to send comment.");
+          }
+        };
+
         return (
-          <div key={p.id} className="border p-5 rounded-lg">
-            {/* user info */}
+          <div key={p.id} className="border p-5 rounded-lg shadow-sm">
+            {/* User Info */}
             <div className="flex items-center gap-4 mb-3">
               <img
                 src={p.user?.avatarUrl || "/default-avatar.png"}
@@ -121,10 +145,10 @@ const Main = () => {
               </h1>
             </div>
 
-            {/* post description */}
+            {/* Post Description */}
             <p className="mb-3">{p.description}</p>
 
-            {/* embedded project */}
+            {/* Embedded Project */}
             <div className="relative mb-3 rounded-lg overflow-hidden border">
               <iframe
                 src={p.url}
@@ -135,12 +159,13 @@ const Main = () => {
               <div className="absolute inset-0 bg-transparent pointer-events-auto" />
             </div>
 
-            {/* actions */}
+            {/* Actions */}
             <div className="flex justify-center gap-5 border-t pt-3 mt-3">
               <Button
                 variant={isLiked ? "default" : "outline"}
                 className="flex items-center gap-2"
                 onClick={handleLike}
+                disabled={!userId}
               >
                 <ThumbsUp />
                 {isLiked ? "Liked" : "Like"}
@@ -154,34 +179,48 @@ const Main = () => {
                 <Share2 /> Visit
               </Button>
 
-              {/* review dialog */}
+              {/* Comment Dialog */}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="link" className="flex items-center gap-2">
-                    <MessageCircle /> Review
+                    <MessageCircle /> Comment
                   </Button>
                 </DialogTrigger>
 
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
-                    <DialogTitle>Write a review</DialogTitle>
+                    <DialogTitle>Write a comment</DialogTitle>
                     <DialogDescription>
-                      Write what you feel about the portfolio
+                      Share what you think about this portfolio.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="grid gap-4">
-                    <Input
-                      id="review"
-                      name="review"
-                      defaultValue="I LIKE IT! KEEP IT UP"
-                    />
-                  </div>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <Button type="submit">Send</Button>
-                  </DialogFooter>
+
+                  <DialogClose asChild>
+                    <form
+                      onSubmit={(e) => handleSendComment(e, () => {})}
+                      className="grid gap-4"
+                    >
+                      <Input
+                        id="review"
+                        name="review"
+                        placeholder="I LIKE IT! KEEP IT UP"
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                      />
+
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button
+                          type="submit"
+                          onClick={(e) => handleSendComment(e, () => {})}
+                        >
+                          Send
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogClose>
                 </DialogContent>
               </Dialog>
             </div>

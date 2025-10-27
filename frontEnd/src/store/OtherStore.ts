@@ -190,3 +190,61 @@ export const useReactionStore = create<UseReactionStore>((set, get) => ({
     }
   },
 }));
+
+//comment store
+type Comment = {
+  id: string;
+  portfolioId: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  receiverId: string;
+};
+
+type CommentData = {
+  content: string;
+  userId: string;
+  receiverId: string;
+};
+
+type UseCommentStore = {
+  comments: Comment[];
+  loading: boolean;
+  error: string | null;
+  getComments: (portfolioId: string) => Promise<void>;
+  sendComments: (portfolioId: string, data: CommentData) => Promise<void>;
+};
+
+export const useCommentStore = create<UseCommentStore>((set) => ({
+  comments: [],
+  loading: false,
+  error: null,
+
+  getComments: async (portfolioId: string) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await api.get(`/comments/${portfolioId}`);
+      // Expect backend to return array
+      const comments = Array.isArray(res.data) ? res.data : [];
+      set({ comments, loading: false });
+    } catch (e) {
+      console.error("getComments error:", e);
+      set({ error: "Failed to fetch comments", loading: false });
+    }
+  },
+
+  sendComments: async (portfolioId: string, data: CommentData) => {
+    set({ loading: true, error: null });
+    try {
+      await api.post(`/comments/${portfolioId}`, data);
+      // refresh comments after sending
+      const res = await api.get(`/comments/${portfolioId}`);
+      const comments = Array.isArray(res.data) ? res.data : [];
+      set({ comments, loading: false });
+    } catch (e) {
+      console.error("sendComments error:", e);
+      set({ error: "Failed to send comment", loading: false });
+    }
+  },
+}));
