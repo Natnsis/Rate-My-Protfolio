@@ -25,6 +25,7 @@ const RightSide = () => {
     if (!error) {
       setLink("");
       setDescription("");
+      window.location.reload();
     }
     setIsLoading(false);
   };

@@ -37,7 +37,7 @@ const Ai = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/v1/ai",
+        "https://rate-my-protfolio-1.onrender.com/api/v1/ai",
         { link, type: responseType },
         { headers: { "Content-Type": "application/json" } }
       );

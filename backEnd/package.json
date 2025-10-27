@@ -1,9 +1,11 @@
 {
   "name": "my-express-app",
   "version": "1.0.0",
+  "description": "Express + TypeScript + Prisma backend",
   "engines": {
     "node": "20.x"
   },
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
@@ -13,7 +15,8 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@google/genai": "^1.27.0",
@@ -47,5 +50,13 @@
     "prisma": "^5.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0"
-  }
+  },
+  "keywords": [
+    "express",
+    "typescript",
+    "prisma",
+    "backend",
+    "api"
+  ],
+  "license": "MIT"
 }

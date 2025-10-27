@@ -1,22 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
-    "module": "commonjs",
-    "lib": ["es2021"],
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": false,
-    "sourceMap": true,
-    "baseUrl": ".",
+    "target": "ES2021", // Modern JS target
+    "module": "commonjs", // Node.js compatible
+    "lib": ["es2021"], // Include ES2021 features
+    "outDir": "./dist", // Compiled output
+    "rootDir": "./src", // Source folder
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Allow default imports from CommonJS
+    "skipLibCheck": true, // Skip type checking for node_modules
+    "forceConsistentCasingInFileNames": true, // Ensure consistent imports
+    "resolveJsonModule": true, // Allow importing JSON
+    "declaration": false, // No type declaration output
+    "sourceMap": true, // Generate source maps for debugging
+    "baseUrl": ".", // Base path for imports
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"] // Alias for cleaner imports
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"], // Include all TS files in src
+  "exclude": ["node_modules"] // Exclude dependencies
 }

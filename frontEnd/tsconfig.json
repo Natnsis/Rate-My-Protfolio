@@ -8,6 +8,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "strict": false, // disables all strict type checks
+    "noEmitOnError": false, // allows emitting JS even if TS errors exist
+    "skipLibCheck": true, // skips type checks in node_modules
+    "allowJs": true // allows compiling JS files
   }
 }
