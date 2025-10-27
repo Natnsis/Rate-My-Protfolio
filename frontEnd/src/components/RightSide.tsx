@@ -32,7 +32,7 @@ const RightSide = () => {
       // Clear form
       setLink("");
       setDescription("");
-      window.location.href = "https://rate-my-protfolio.vercel.app";
+      window.location.assign("https://rate-my-protfolio.vercel.app");
     }
   };
 
