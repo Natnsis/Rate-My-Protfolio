@@ -9,6 +9,8 @@ const RightSide = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
+  const fetchPosts = usePostStore((s) => s.fetchPosts);
+
   const addPost = usePostStore((s) => s.addPosts);
   const { id } = useAuthStore((s) => s.user);
   const error = usePostStore((s) => s.error);
@@ -19,16 +21,22 @@ const RightSide = () => {
       alert("Please provide both link and description.");
       return;
     }
+
     const data = { userId: id, url: link, description };
     setIsLoading(true);
+
     await addPost(data);
+
+    setIsLoading(false);
+
     if (!error) {
+      // Clear form
       setLink("");
       setDescription("");
-      window.location.reload();
+      fetchPosts();
     }
-    setIsLoading(false);
   };
+
   return (
     <div className="col-span-1 pt-5">
       <div className="rounded border w-full p-3">
@@ -48,7 +56,7 @@ const RightSide = () => {
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
               <span className="text-gray-200 flex items-center gap-2">
-                <Spinner /> "Posting..."
+                <Spinner /> Posting...
               </span>
             ) : (
               "Post"
