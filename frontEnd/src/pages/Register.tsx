@@ -17,7 +17,7 @@ const Register = () => {
   const [image, setImage] = useState<null | File>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // alert state (shown on the form)
+  // alert state
   const [alertMessage, setAlertMessage] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(null);
   const [visible, setVisible] = useState<boolean>(false);
@@ -25,13 +25,11 @@ const Register = () => {
   const register = useAuthStore((s) => s.register);
   const storeError = useAuthStore((s) => s.error);
 
-  // show store-level errors as form alert
   useEffect(() => {
     if (storeError) {
       showAlert(storeError, "error");
       useAuthStore.setState({ error: null });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeError]);
 
   const showAlert = (
@@ -70,7 +68,6 @@ const Register = () => {
           ? messageOrData
           : messageOrData?.message || "Registered successfully";
       showAlert(message, "success");
-      // reset form
       setFirstName("");
       setLastName("");
       setEmail("");
@@ -88,8 +85,8 @@ const Register = () => {
 
   return (
     <section className="h-screen w-screen bg-[url('/auth2.png')] bg-cover bg-center flex items-center justify-center">
-      <div className="backdrop-blur-lg bg-black/40 border border-white/10 rounded-2xl p-10 sm:p-12 md:p-14 text-white shadow-2xl w-[90%] max-w-md">
-        {/* Inline alert shown on the form */}
+      <div className="backdrop-blur-lg bg-black/40 border border-white/10 rounded-2xl p-6 sm:p-8 md:p-12 text-white shadow-2xl w-[95%] max-w-sm sm:max-w-md">
+        {/* Inline alert */}
         {visible && alertType && (
           <div
             role="alert"
@@ -113,14 +110,20 @@ const Register = () => {
           </div>
         )}
 
-        <form className="flex flex-col gap-5" onSubmit={handleRegister}>
-          <h1 className="text-center font-bbh text-4xl font-semibold mb-2">
+        <form
+          className="flex flex-col gap-4 sm:gap-5"
+          onSubmit={handleRegister}
+        >
+          <h1 className="text-center font-bbh text-3xl sm:text-4xl font-semibold mb-2">
             Create Account
           </h1>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex flex-col gap-2 w-full">
-              <Label htmlFor="firstName" className="text-sm font-medium">
+              <Label
+                htmlFor="firstName"
+                className="text-sm sm:text-base font-medium"
+              >
                 First Name
               </Label>
               <Input
@@ -128,11 +131,14 @@ const Register = () => {
                 placeholder="John"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
+                className="bg-white/10 border border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30 text-sm sm:text-base"
               />
             </div>
             <div className="flex flex-col gap-2 w-full">
-              <Label htmlFor="lastName" className="text-sm font-medium">
+              <Label
+                htmlFor="lastName"
+                className="text-sm sm:text-base font-medium"
+              >
                 Last Name
               </Label>
               <Input
@@ -140,13 +146,13 @@ const Register = () => {
                 placeholder="Doe"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
+                className="bg-white/10 border border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30 text-sm sm:text-base"
               />
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="text-sm font-medium">
+            <Label htmlFor="email" className="text-sm sm:text-base font-medium">
               Email
             </Label>
             <Input
@@ -154,26 +160,32 @@ const Register = () => {
               placeholder="example@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
+              className="bg-white/10 border border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30 text-sm sm:text-base"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password" className="text-sm font-medium">
+            <Label
+              htmlFor="password"
+              className="text-sm sm:text-base font-medium"
+            >
               Password
             </Label>
             <Input
               id="password"
               type="password"
-              value={password}
               placeholder="••••••••"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30"
+              className="bg-white/10 border border-white/20 text-white placeholder:text-gray-300 focus-visible:ring-white/30 text-sm sm:text-base"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="profile" className="text-sm font-medium">
+            <Label
+              htmlFor="profile"
+              className="text-sm sm:text-base font-medium"
+            >
               Profile Image
             </Label>
             <Input
@@ -185,18 +197,18 @@ const Register = () => {
                   setImage(e.target.files[0]);
                 }
               }}
-              className="bg-white/10 border-white/20 text-white file:text-white file:bg-white/20 file:border-none file:rounded-md file:px-3 file:py-1 file:cursor-pointer hover:file:bg-white/30"
+              className="bg-white/10 border border-white/20 text-white file:text-white file:bg-white/20 file:border-none file:rounded-md file:px-3 file:py-1 file:cursor-pointer hover:file:bg-white/30 text-sm sm:text-base"
             />
           </div>
 
           <Button
             variant="default"
-            className="mt-4 bg-white text-black hover:bg-gray-100 font-semibold"
+            className="mt-4 bg-white text-black hover:bg-gray-100 font-semibold w-full flex justify-center"
             disabled={isLoading}
           >
             {isLoading ? (
-              <span className="flex gap-2 text-gray-400">
-                <Spinner />
+              <span className="flex gap-2 items-center text-gray-400">
+                <Spinner size={16} />
                 Registering
               </span>
             ) : (
@@ -204,9 +216,9 @@ const Register = () => {
             )}
           </Button>
 
-          <p className="text-center">
+          <p className="text-center text-sm sm:text-base mt-2">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary">
+            <Link to="/login" className="text-primary font-semibold">
               Login
             </Link>
           </p>

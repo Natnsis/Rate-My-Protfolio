@@ -72,40 +72,52 @@ const Leaderboards = () => {
 
   return (
     <section className="h-screen">
-      <div className="sticky top-5 pb-5">
+      {/* Heading */}
+      <div className="sticky top-5 pb-5 z-10 bg-white/0">
         <Heading page="leaderboards" />
       </div>
-      <div className="grid grid-cols-4 p-5 px-20 h-full gap-8">
-        <Sidebar />
-        <main className="col-span-3 overflow-auto p-5 h-[85vh]">
-          <h1 className="font-bbh text-3xl">
+
+      {/* Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-4 p-5 md:px-20 h-full gap-8">
+        {/* Sidebar hidden on mobile */}
+        <div className="hidden md:block">
+          <Sidebar />
+        </div>
+
+        {/* Main content */}
+        <main className="col-span-1 md:col-span-3 overflow-auto p-5 h-[85vh]">
+          <h1 className="font-bbh text-3xl text-center md:text-left">
             <span className="text-primary">Top 10</span> Ranking Portfolios
           </h1>
 
-          <div className="flex flex-wrap gap-4 mt-10 w-full font-quintessential">
+          <div className="flex flex-wrap gap-4 mt-10 w-full font-quintessential justify-center md:justify-start">
             {topPortfolios.map((p, index) => (
               <div
                 key={p.id}
-                className="rounded-lg border p-3 flex flex-col gap-2 relative"
+                className="rounded-lg border p-3 flex flex-col gap-2 relative
+                           w-[48%] sm:w-[45%] md:w-40"
               >
-                {/* Frozen iframe as an image */}
+                {/* iframe preview */}
                 <iframe
                   src={p.url}
-                  className="w-40 h-40 pointer-events-none"
+                  className="w-full h-40 pointer-events-none"
                   sandbox=""
                   loading="lazy"
                 />
 
-                <h1>
+                {/* User name */}
+                <h1 className="truncate text-center md:text-left">
                   {p.user
                     ? `${p.user.firstName} ${p.user.lastName}`
                     : "Unknown"}
                 </h1>
 
-                <p className="flex items-center gap-1 text-sm">
+                {/* Likes */}
+                <p className="flex items-center gap-1 text-sm justify-center md:justify-start">
                   <Heart className="text-red-500" /> {p.likeCount}
                 </p>
 
+                {/* Ranking index */}
                 <p className="absolute top-2 right-2 text-primary font-bbh text-2xl">
                   {index + 1}
                 </p>
