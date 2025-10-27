@@ -32,7 +32,6 @@ export const register = async (req: Request, res: Response) => {
     });
     res.status(201).json({ message: 'User registered successfully' });
   } catch (e) {
-    console.error('Registration Error:', e);
     if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
       return res.status(409).json({ message: 'Email already in use.' });
     }
@@ -71,6 +70,21 @@ export const fetchUser = async (req: Request, res: Response) => {
     const { id } = req.body;
     const user = await prisma.user.findUnique({ where: { id } });
     return res.status(200).json(user);
+  } catch (e) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    // Clear the cookie in the browser
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      path: '/',
+    });
+
+    // Respond with success
+    res.status(200).json({ message: 'Logged out successfully' });
   } catch (e) {
     res.status(500).json({ message: 'Server error' });
   }

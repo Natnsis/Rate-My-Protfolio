@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Award, Bot, House, Mail } from "lucide-react";
 import { ModeToggle } from "./ui/mode-toggle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/AuthStore";
 import { useUserStore } from "@/store/UserStore";
@@ -21,6 +21,7 @@ interface PropInterface {
 }
 
 const Heading = ({ page }: PropInterface) => {
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const id = user?.id;
   const [isHome, setIsHome] = useState(false);
@@ -33,7 +34,9 @@ const Heading = ({ page }: PropInterface) => {
   useEffect(() => {
     if (!id) {
       alert("User ID is undefined");
+      navigate("/login");
     }
+
     fetchUser(id!);
   }, [id, fetchUser]);
 
@@ -43,6 +46,11 @@ const Heading = ({ page }: PropInterface) => {
     setIsLeaderboards(page === "leaderboards");
     setIsAi(page === "ai");
   }, [page]);
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    navigate("/login");
+  };
 
   return (
     <header className="flex justify-between px-10 pb-3 border-b font-poppins">
@@ -103,7 +111,9 @@ const Heading = ({ page }: PropInterface) => {
               {data?.firstName} {data?.lastName}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-center">Logout</DropdownMenuItem>
+            <DropdownMenuItem className="text-center" onClick={handleLogout}>
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </nav>
