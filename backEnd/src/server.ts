@@ -7,6 +7,7 @@ import PostRoute from './routes/post.routes';
 import LikeRoute from './routes/like.routes';
 import CommentRoute from './routes/comment.routes';
 import AiRoute from './routes/ai.routes';
+import { Request, Response } from 'express';
 
 dotenv.config();
 
@@ -48,6 +49,10 @@ app.use('/api/v1', PostRoute);
 app.use('/api/v1', LikeRoute);
 app.use('/api/v1', CommentRoute);
 app.use('/api/v1', AiRoute);
+
+app.get('/health', (req, res) => {
+  res.json("up and working")
+})
 
 // Start server
 const PORT = process.env.PORT || 5000;
