@@ -1,18 +1,25 @@
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 const Hero = () => {
   return (
-    <div className="flex flex-col gap-5 py-20 items-center">
-      <h1 className="text-center text-6xl w-1/2">
-        AI-Driven Conversation Growth Right Away
+    <div className="py-15 flex flex-col items-center justify-center gap-5">
+      <p>Rate. Improve. Climb.</p>
+      <h1 className="text-6xl w-2/3 text-center">
+        Post your portfolio. Watch the internet judge it.
       </h1>
-      <p className="text-lg w-2/3 text-center">
-        From concept to conversion - manage thousands of successful influencers
-        ads seamlessly
+      <p>
+        Get likes, comments, rankings, AI roasts, and instant feedback from
+        creators worldwide.
       </p>
-      <div className="flex justify-center gap-5">
-        <Button>Download Free App</Button>
-        <Button variant="outline">Get Started Free</Button>
+      <div className="flex gap-5 mt-10">
+        <Button className="p-5 rounded-full">Get Started - its Fire</Button>
+        <Button className="p-5 rounded-full" variant="outline">
+          Download - Mobile App
+        </Button>
+      </div>
+      <div className="mt-10">
+        <Image src="/rmp.png" alt="Portfolio" width={1000} height={1000} />
       </div>
     </div>
   );

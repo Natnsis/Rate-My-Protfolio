@@ -15,8 +15,10 @@ const Header = () => {
         <Link href="/">Pricing</Link>
       </nav>
       <div className="flex gap-5">
-        <Button>Book A Demo</Button>
-        <Button>Get Started</Button>
+        <Button variant="outline" className="rounded-full">
+          Book A Demo
+        </Button>
+        <Button className="rounded-full">Get Started</Button>
       </div>
     </header>
   );
