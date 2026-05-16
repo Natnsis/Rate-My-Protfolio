@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const roboto = Roboto({
+const poppins = Poppins({
   weight: ["400", "500", "700"],
   subsets: ["latin"],
-  variable: "--font-roboto",
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("h-full", "antialiased", roboto.variable)}>
-      <body className="min-h-full flex flex-col font-roboto">{children}</body>
+    <html lang="en" className={cn("h-full", "antialiased", poppins.variable)}>
+      <body className="min-h-full flex flex-col font-poppins">{children}</body>
     </html>
   );
 }
