@@ -13,9 +13,9 @@ const Hero = () => {
         creators worldwide.
       </p>
       <div className="flex gap-5 mt-10">
-        <Button className="p-5 rounded-full">Get Started - its Fire</Button>
+        <Button className="p-5 rounded-full"> Explore Leaderboard</Button>
         <Button className="p-5 rounded-full" variant="outline">
-          Download - Mobile App
+          Upload Portfolio
         </Button>
       </div>
       <div className="mt-10">

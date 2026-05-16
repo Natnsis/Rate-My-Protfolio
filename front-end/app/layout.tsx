@@ -21,7 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("h-full", "antialiased", poppins.variable)}>
-      <body className="min-h-full flex flex-col font-poppins">{children}</body>
+      <body
+        className="min-h-full flex flex-col font-poppins"
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
     </html>
   );
 }
