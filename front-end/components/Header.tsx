@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
+  const router = useRouter();
   return (
     <header className="flex justify-between sticky top-0 bg-white/30 backdrop-blur-xl py-3">
       <div className="flex gap-2 items-center">
@@ -18,7 +22,9 @@ const Header = () => {
         <Button variant="outline" className="rounded-full">
           Book A Demo
         </Button>
-        <Button className="rounded-full">Get Started</Button>
+        <Button className="rounded-full" onClick={() => router.push("/login")}>
+          Get Started
+        </Button>
       </div>
     </header>
   );
