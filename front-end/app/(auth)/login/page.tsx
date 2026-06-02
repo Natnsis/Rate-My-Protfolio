@@ -35,10 +35,7 @@ const Page = () => {
             {/* Form */}
             <form className="space-y-4">
               <div className="space-y-1.5">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="email" className="text-sm font-medium">
                   Email
                 </label>
                 <input
@@ -51,10 +48,7 @@ const Page = () => {
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="text-sm font-medium"
-                  >
+                  <label htmlFor="password" className="text-sm font-medium">
                     Password
                   </label>
                   <Link
@@ -90,10 +84,7 @@ const Page = () => {
             </div>
 
             {/* Google */}
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-            >
+            <Button variant="outline" className="w-full gap-2">
               <GoogleLogo className="size-4" weight="bold" />
               Google
             </Button>
