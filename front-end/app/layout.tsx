@@ -19,11 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn("h-full antialiased", manrope.variable)}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={cn("h-full antialiased", manrope.variable)}>
+      <body className="min-h-full flex flex-col sm:py-2">{children}</body>
     </html>
   );
 }
