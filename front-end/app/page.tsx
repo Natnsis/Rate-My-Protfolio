@@ -1,23 +1,23 @@
-import Brands from "@/components/Brands";
-import Features from "@/components/Freatures";
-import Header from "@/components/Header";
+"use client";
+import DesktopHeader from "@/components/DesktopHeader";
 import Hero from "@/components/Hero";
-import LiveTrending from "@/components/LiveTrending";
-import PortfolioBattles from "@/components/PortfolioBattles";
-import SocialProof from "@/components/SocialProof";
+import MobileHeader from "@/components/MobileHeader";
 
-const page = () => {
+const App = () => {
   return (
-    <div className="px-5 py-b h-screen overflow-y-auto">
-      <Header />
+    <div>
+      <div className="hidden md:block">
+        <DesktopHeader />
+      </div>
+      <div className="block md:hidden">
+        <MobileHeader />
+      </div>
+
+      <div className="mt-0 lg:mt-20 md:mt-15"></div>
       <Hero />
-      <Brands />
-      <Features />
-      <SocialProof />
-      <LiveTrending />
-      <PortfolioBattles />
     </div>
   );
 };
 
-export default page;
+export default App;
+

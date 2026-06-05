@@ -1,15 +1,9 @@
-"use client";
-
-import Sidebar from "@/components/Sidebar";
+import DesktopDashHeader from "@/components/DesktopDashHeader";
 
 const page = () => {
   return (
-    <div className="grid grid-cols-5 h-screen">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="col-span-3">heh</div>
-      <div className="border-l h-full">hehe</div>
+    <div className="px-20">
+      <DesktopDashHeader />
     </div>
   );
 };

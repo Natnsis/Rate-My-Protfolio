@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const poppins = Poppins({
-  weight: ["400", "500", "700"],
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-poppins",
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -20,13 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("h-full", "antialiased", poppins.variable)}>
-      <body
-        className="min-h-full flex flex-col font-poppins"
-        suppressHydrationWarning
-      >
-        {children}
-      </body>
+    <html lang="en" className={cn("h-full antialiased", manrope.variable)}>
+      <body className="min-h-full flex flex-col sm:py-2">{children}</body>
     </html>
   );
 }
