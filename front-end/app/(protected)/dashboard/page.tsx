@@ -1,12 +1,59 @@
+import BentoComponents from "@/components/BentoComponents";
 import DesktopDashHeader from "@/components/DesktopDashHeader";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Medal } from "lucide-react";
+
+const getSpan = (index: number) => {
+  if (index % 7 === 0) return "md:col-span-2 md:row-span-2";
+  if (index % 5 === 0) return "md:col-span-2";
+  if (index % 3 === 0) return "md:row-span-2";
+
+  return "md:col-span-1 md:row-span-1";
+};
 
 const page = () => {
+  const items = [
+    {
+      title: "Hero Card",
+    },
+    {
+      title: "Analytics",
+    },
+    {
+      title: "Messages",
+    },
+    {
+      title: "Activity Feed",
+    },
+    {
+      title: "Statistics",
+    },
+    {
+      title: "Team",
+    },
+    {
+      title: "Settings",
+    },
+    {
+      title: "Settings",
+    },
+    {
+      title: "Settings",
+    },
+    {
+      title: "Settings",
+    },
+    {
+      title: "Settings",
+    },
+    {
+      title: "Settings",
+    },
+  ];
   return (
     <div className="h-screen px-5">
       <DesktopDashHeader />
+      <div className="mt-5">
+        <BentoComponents data={items} />
+      </div>
     </div>
   );
 };
