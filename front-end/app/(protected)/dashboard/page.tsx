@@ -1,5 +1,5 @@
 import BentoComponents from "@/components/BentoComponents";
-import DesktopDashHeader from "@/components/DesktopDashHeader";
+import DashHeader from "@/components/DashHeader";
 
 const getSpan = (index: number) => {
   if (index % 7 === 0) return "md:col-span-2 md:row-span-2";
@@ -50,8 +50,8 @@ const page = () => {
   ];
   return (
     <div className="min-h-screen px-5">
-      <div className="h-[25vh] sticky top-0 bg-background z-10">
-        <DesktopDashHeader />
+      <div className="h-[20vh] sticky top-0 bg-background z-10">
+        <DashHeader />
       </div>
       <div className="mt-5">
         <BentoComponents data={items} />

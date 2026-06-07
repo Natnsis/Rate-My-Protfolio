@@ -46,8 +46,8 @@ const BentoComponents = ({ data }: { data: any }) => {
                 </div>
               </div>
 
-              <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col items-end lg:items-center lg:justify-center lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex flex-col gap-2 lg:grid lg:grid-cols-2">
                   <Button variant="secondary" size="sm"><Heart className="h-4 w-4" /></Button>
                   <Button variant="secondary" size="sm"><Save className="h-4 w-4" /></Button>
                   <Button variant="secondary" size="sm"><Share className="h-4 w-4" /></Button>
