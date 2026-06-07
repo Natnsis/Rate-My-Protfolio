@@ -50,8 +50,8 @@ const page = () => {
   ];
   return (
     <div className="min-h-screen px-5">
-      <div className="h-[20vh] sticky top-0 bg-background z-10">
-        <DashHeader />
+      <div className="h-fit sticky top-0 bg-background z-10">
+        <DashHeader show={true} />
       </div>
       <div className="mt-5">
         <BentoComponents data={items} />

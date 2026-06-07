@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const DashHeader = () => {
+const DashHeader = ({ show }: { show: boolean }) => {
   return (
     <div>
       <header className="flex justify-between border-b pb-3 items-center">
@@ -23,11 +23,10 @@ const DashHeader = () => {
         </div>
 
         <div className="hidden sm:flex gap-3">
-          <Button>Feed</Button>
-          <Button variant="outline">Explore</Button>
-          <Button variant="outline">Favorites</Button>
-          <Button variant="outline">Statistics</Button>
-          <Button variant="outline">Leaderboards</Button>
+          <Button>Explore</Button>
+          <Button variant="ghost">Favorites</Button>
+          <Button variant="ghost">Statistics</Button>
+          <Button variant="ghost">Leaderboards</Button>
         </div>
 
         <div className="flex gap-2 items-center">
@@ -110,7 +109,7 @@ const DashHeader = () => {
         </div>
       </header>
 
-      <div className="flex gap-10 mt-5 pb-5 pl-5">
+      <div className={`pl-5 ${show ? "flex mt-5 pb-5 gap-10" : "hidden"}`}>
         <div className="flex gap-5 pr-10 w-full overflow-x-auto scrollbar-hide">
           <Avatar className="h-15 w-15">
             <AvatarFallback>
