@@ -49,8 +49,10 @@ const page = () => {
     },
   ];
   return (
-    <div className="h-screen px-5">
-      <DesktopDashHeader />
+    <div className="min-h-screen px-5">
+      <div className="h-[25vh] sticky top-0 bg-background z-10">
+        <DesktopDashHeader />
+      </div>
       <div className="mt-5">
         <BentoComponents data={items} />
       </div>
