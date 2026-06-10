@@ -12,8 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { usePathname, useRouter } from "next/navigation";
 
 const DashHeader = ({ show }: { show: boolean }) => {
+  const router = useRouter();
+  const path = usePathname();
   return (
     <div>
       <header className="flex justify-between border-b pb-3 items-center">
@@ -23,10 +26,30 @@ const DashHeader = ({ show }: { show: boolean }) => {
         </div>
 
         <div className="hidden sm:flex gap-3">
-          <Button>Explore</Button>
-          <Button variant="ghost">Favorites</Button>
-          <Button variant="ghost">Statistics</Button>
-          <Button variant="ghost">Leaderboards</Button>
+          <Button
+            onClick={() => router.push("/dashboard")}
+            variant={path == "/dashboard" ? "default" : "ghost"}
+          >
+            Explore
+          </Button>
+          <Button
+            onClick={() => router.push("/favorites")}
+            variant={path == "/favorites" ? "default" : "ghost"}
+          >
+            Favorites
+          </Button>
+          <Button
+            onClick={() => router.push("/statistics")}
+            variant={path == "/statistics" ? "default" : "ghost"}
+          >
+            Statistics
+          </Button>
+          <Button
+            onClick={() => router.push("/leaderboards")}
+            variant={path == "/leaderboards" ? "default" : "ghost"}
+          >
+            Leaderboards
+          </Button>
         </div>
 
         <div className="flex gap-2 items-center">
