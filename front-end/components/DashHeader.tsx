@@ -134,36 +134,48 @@ const DashHeader = ({ show }: { show: boolean }) => {
 
       <div className={`pl-5 ${show ? "flex mt-5 pb-5 gap-10" : "hidden"}`}>
         <div className="flex gap-5 pr-10 w-full overflow-x-auto scrollbar-hide">
-          <Avatar className="h-15 w-15">
-            <AvatarFallback>
-              <p className="text-3xl">+</p>
-            </AvatarFallback>
-          </Avatar>
+          <Button className="h-16 w-16 rounded-full">
+            <Avatar className="h-15 w-15">
+              <AvatarFallback>
+                <p className="text-3xl">+</p>
+              </AvatarFallback>
+            </Avatar>
+          </Button>
 
-          <Avatar className="h-15 w-15">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Button className="h-16 w-16 rounded-full" variant="secondary">
+            <Avatar className="h-15 w-15">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Button>
 
-          <Avatar className="h-15 w-15">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Button className="h-16 w-16 rounded-full" variant="secondary">
+            <Avatar className="h-15 w-15">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Button>
 
-          <Avatar className="h-15 w-15">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Button className="h-16 w-16 rounded-full" variant="secondary">
+            <Avatar className="h-15 w-15">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Button>
 
-          <Avatar className="h-15 w-15">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Button className="h-16 w-16 rounded-full" variant="secondary">
+            <Avatar className="h-15 w-15">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Button>
 
-          <Avatar className="h-15 w-15">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Button className="h-16 w-16 rounded-full" variant="secondary">
+            <Avatar className="h-15 w-15">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Button>
         </div>
       </div>
     </div>
