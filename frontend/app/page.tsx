@@ -1,4 +1,5 @@
 import Demo from "@/components/Demo";
+import DevCounts from "@/components/DevCounts";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 
@@ -8,6 +9,7 @@ const page = () => {
       <Header />
       <Hero />
       <Demo />
+      <DevCounts />
     </div>
   );
 };

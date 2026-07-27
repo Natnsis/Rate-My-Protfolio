@@ -2,7 +2,7 @@ import { Card } from "./ui/card";
 
 const Demo = () => {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center h-[80vh]">
       <div className="grid grid-cols-4 gap-4 p-4 w-[70vw]">
         <Card className="col-span-2 row-span-2 rounded-xl p-6 flex flex-col justify-between">
           <span className="text-xs uppercase tracking-wider text-neutral-400">
