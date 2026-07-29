@@ -25,7 +25,7 @@ const Features = () => {
     <div className="mt-[20vh]">
       <div className="flex flex-col items-center">
         <h1 className="text-4xl">Built for developers who ship</h1>
-        <p>
+        <p className="text-muted-foreground">
           Every part of DevFolio is built around one loop: post, get feedback,
           improve, post again.
         </p>
@@ -69,7 +69,7 @@ const Features = () => {
               <Card className="col-span-1 p-5">
                 <Heart />
                 <h1 className="text-xl">Structured ratings</h1>
-                <p className="w-2/3">
+                <p className="w-2/3 text-muted-foreground">
                   Not just likes — devs score your UI, UX and code separately,
                   so feedback actually tells you what to fix.
                 </p>
@@ -79,7 +79,7 @@ const Features = () => {
                   <div className="w-1/2">
                     <Trophy />
                     <h1 className="text-xl my-5">Climb the leaderboard</h1>
-                    <p>
+                    <p className="text-muted-foreground">
                       Every like counts toward your rank. Weekly and all-time
                       boards keep the best portfolios visible — and keep you
                       shipping.

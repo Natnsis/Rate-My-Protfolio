@@ -24,21 +24,24 @@ const Testimonials = () => {
   ];
 
   return (
-    <div className="mt-[15vh] flex justify-center">
+    <div className="mt-[20vh] flex justify-center">
       <div className="w-[70vw] flex flex-col">
         <h1 className="text-4xl text-center">What developers are saying</h1>
         <div className="flex justify-between gap-10 mt-10">
           {testis.map((t, index) => (
             <Card className="p-5" key={index}>
-              <p>&apos;{t.parags}&apos;</p>
-              <div className="flex gap-2">
+              <p>
+                &apos;<span className="text-muted-foreground">{t.parags}</span>
+                &apos;
+              </p>
+              <div className="flex gap-2 items-center">
                 <Avatar>
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1>{t.name}</h1>
-                  <p>{t.role}</p>
+                  <h1 className="font-bold">{t.name}</h1>
+                  <p className="text-muted-foreground">{t.role}</p>
                 </div>
               </div>
             </Card>

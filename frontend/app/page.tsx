@@ -1,6 +1,7 @@
 import Demo from "@/components/Demo";
 import DevCounts from "@/components/DevCounts";
 import Features from "@/components/Features";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonials";
@@ -14,6 +15,7 @@ const page = () => {
       <DevCounts />
       <Features />
       <Testimonials />
+      <Footer />
     </div>
   );
 };
