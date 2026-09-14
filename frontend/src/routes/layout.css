@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+:root {
+	--font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+		sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+	--df-ink: oklch(0.2217 0.0126 264.2756);
+	--df-ink-soft: oklch(0.9367 0.0058 264.5315);
+	--df-muted: oklch(0.4905 0.0298 270.7441);
+	--df-line: oklch(0.8525 0.0141 258.3489);
+	--df-bg: oklch(0.9545 0.0046 258.3249);
+	--df-accent: oklch(0.4833 0.0873 255.055);
+	--df-accent-deep: oklch(0.3448 0.0685 255.0266);
+	--df-accent-soft: oklch(0.9088 0.0196 252.8865);
+	--df-warm: oklch(0.6031 0.1107 41.8526);
+	--df-red: oklch(0.5237 0.1707 27.0455);
+	--df-green: oklch(0.5406 0.0773 152.7118);
+	--df-shadow-1: 0 0 0 1px var(--df-line);
+	--df-shadow-pill: 0 0 0 1px var(--df-line);
+	--df-shadow-rail: 0 0 0 1px var(--df-line);
+	--df-shadow-2: 0 0 0 1px var(--df-line);
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background: var(--df-bg);
+	color: var(--df-ink);
+	font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: var(--df-ink);
+	text-decoration: none;
+}
+
+a:hover {
+	color: var(--df-accent);
+}
+
+.mono {
+	font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+}

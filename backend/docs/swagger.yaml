@@ -1,0 +1,915 @@
+basePath: /api
+definitions:
+  handlers.CommentDTO:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      text:
+        type: string
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+    type: object
+  handlers.LeaderboardRow:
+    properties:
+      morePortfolios:
+        type: integer
+      rank:
+        type: integer
+      recentScreenshots:
+        items:
+          type: string
+        type: array
+      topPortfolioId:
+        type: integer
+      totalLikes:
+        type: integer
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+      versionCount:
+        type: integer
+    type: object
+  handlers.NotificationDTO:
+    properties:
+      actor:
+        $ref: '#/definitions/handlers.UserPublic'
+      createdAt:
+        type: string
+      id:
+        type: integer
+      kind:
+        type: string
+      message:
+        type: string
+      portfolio:
+        properties:
+          id:
+            type: integer
+          title:
+            type: string
+        type: object
+      read:
+        type: boolean
+    type: object
+  handlers.PortfolioDetail:
+    properties:
+      commentCount:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      latestVersion:
+        $ref: '#/definitions/handlers.VersionDTO'
+      likeCount:
+        type: integer
+      likedByMe:
+        type: boolean
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+      versionCount:
+        type: integer
+      versions:
+        items:
+          $ref: '#/definitions/handlers.VersionDTO'
+        type: array
+    type: object
+  handlers.PortfolioSummary:
+    properties:
+      commentCount:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      latestVersion:
+        $ref: '#/definitions/handlers.VersionDTO'
+      likeCount:
+        type: integer
+      likedByMe:
+        type: boolean
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+      versionCount:
+        type: integer
+    type: object
+  handlers.RoastDTO:
+    properties:
+      aiGenerated:
+        type: boolean
+      body:
+        type: string
+      createdAt:
+        type: string
+      helpful:
+        type: integer
+      id:
+        type: integer
+      portfolio:
+        properties:
+          id:
+            type: integer
+          screenshotUrl:
+            type: string
+          title:
+            type: string
+        type: object
+      stars:
+        type: integer
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+    type: object
+  handlers.StatsSummary:
+    properties:
+      versionsToday:
+        type: integer
+    type: object
+  handlers.TopStackResponse:
+    properties:
+      developerCount:
+        type: integer
+      stack:
+        type: string
+    type: object
+  handlers.UserPublic:
+    properties:
+      bio:
+        type: string
+      githubUrl:
+        type: string
+      id:
+        type: integer
+      initials:
+        type: string
+      linkedinUrl:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+      twitterUrl:
+        type: string
+      username:
+        type: string
+      websiteUrl:
+        type: string
+    type: object
+  handlers.VersionDTO:
+    properties:
+      codeRating:
+        type: number
+      createdAt:
+        type: string
+      id:
+        type: integer
+      label:
+        type: string
+      note:
+        type: string
+      number:
+        type: integer
+      projectUrl:
+        type: string
+      screenshotUrl:
+        type: string
+      uiRating:
+        type: number
+      uxRating:
+        type: number
+    type: object
+  handlers.addVersionRequest:
+    properties:
+      note:
+        type: string
+      projectUrl:
+        type: string
+      screenshotUrl:
+        type: string
+    type: object
+  handlers.aiGenerateRequest:
+    properties:
+      mode:
+        type: string
+      portfolioId:
+        type: integer
+      prompt:
+        type: string
+    required:
+    - mode
+    - portfolioId
+    type: object
+  handlers.aiGenerateResponse:
+    properties:
+      text:
+        type: string
+    type: object
+  handlers.aiShareRequest:
+    properties:
+      mode:
+        type: string
+      portfolioId:
+        type: integer
+      text:
+        type: string
+    required:
+    - mode
+    - portfolioId
+    - text
+    type: object
+  handlers.authResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+    type: object
+  handlers.createCommentRequest:
+    properties:
+      text:
+        type: string
+    required:
+    - text
+    type: object
+  handlers.createPortfolioRequest:
+    properties:
+      note:
+        type: string
+      projectUrl:
+        type: string
+      screenshotUrl:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  handlers.createRoastRequest:
+    properties:
+      body:
+        type: string
+      portfolioId:
+        type: integer
+      stars:
+        maximum: 5
+        minimum: 0
+        type: integer
+      title:
+        type: string
+    required:
+    - body
+    - portfolioId
+    - title
+    type: object
+  handlers.likeResponse:
+    properties:
+      likeCount:
+        type: integer
+      liked:
+        type: boolean
+    type: object
+  handlers.loginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  handlers.registerRequest:
+    properties:
+      email:
+        example: aria@devfolio.dev
+        type: string
+      name:
+        example: Aria Chen
+        type: string
+      password:
+        example: password123
+        minLength: 8
+        type: string
+      username:
+        example: ariac
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  handlers.updateMeRequest:
+    properties:
+      bio:
+        type: string
+      githubUrl:
+        type: string
+      linkedinUrl:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+      twitterUrl:
+        type: string
+      websiteUrl:
+        type: string
+    type: object
+  handlers.userProfileResponse:
+    properties:
+      stats:
+        $ref: '#/definitions/handlers.userStats'
+      user:
+        $ref: '#/definitions/handlers.UserPublic'
+    type: object
+  handlers.userStats:
+    properties:
+      portfolioCount:
+        type: integer
+      rank:
+        type: integer
+      totalLikes:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: REST API powering the DevFolio frontend — auth, portfolios, versions,
+    likes, comments, roasts, leaderboard, notifications and AI Studio.
+  title: FolioHub API
+  version: "1.0"
+paths:
+  /ai/generate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Target portfolio, mode, optional focus prompt
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.aiGenerateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.aiGenerateResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Generate AI Studio feedback
+      tags:
+      - ai
+  /ai/share:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: AI result to share
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.aiShareRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.RoastDTO'
+      security:
+      - BearerAuth: []
+      summary: Share an AI Studio result as a roast
+      tags:
+      - ai
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.authResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Log in
+      tags:
+      - auth
+  /auth/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.UserPublic'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Current user
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New account details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.registerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.authResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create an account
+      tags:
+      - auth
+  /healthz:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - meta
+  /leaderboard:
+    get:
+      parameters:
+      - description: weekly | monthly | alltime (default weekly)
+        in: query
+        name: timeframe
+        type: string
+      - description: Filter by tag
+        in: query
+        name: category
+        type: string
+      - description: Max results (default 20)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.LeaderboardRow'
+            type: array
+      summary: Leaderboard
+      tags:
+      - leaderboard
+  /leaderboard/top-stack:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.TopStackResponse'
+      summary: Most popular stack/tag
+      tags:
+      - leaderboard
+  /notifications:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.NotificationDTO'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List my notifications
+      tags:
+      - notifications
+  /notifications/read-all:
+    post:
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+      security:
+      - BearerAuth: []
+      summary: Mark all notifications read
+      tags:
+      - notifications
+  /portfolios:
+    get:
+      parameters:
+      - description: trending | latest | mostliked | mostversions
+        in: query
+        name: sort
+        type: string
+      - description: Filter by tag
+        in: query
+        name: tag
+        type: string
+      - description: Match title or author name
+        in: query
+        name: search
+        type: string
+      - description: Only the authenticated user's portfolios
+        in: query
+        name: mine
+        type: boolean
+      - description: Max results (default 30)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset for paging
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.PortfolioSummary'
+            type: array
+      summary: List portfolios (feed / explore)
+      tags:
+      - portfolios
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Portfolio + first version
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.createPortfolioRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.PortfolioDetail'
+      security:
+      - BearerAuth: []
+      summary: Post a new portfolio
+      tags:
+      - portfolios
+  /portfolios/{id}:
+    get:
+      parameters:
+      - description: Portfolio ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.PortfolioDetail'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a portfolio's detail
+      tags:
+      - portfolios
+  /portfolios/{id}/comments:
+    get:
+      parameters:
+      - description: Portfolio ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.CommentDTO'
+            type: array
+      summary: List a portfolio's comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Portfolio ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Comment text
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.createCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.CommentDTO'
+      security:
+      - BearerAuth: []
+      summary: Comment on a portfolio
+      tags:
+      - comments
+  /portfolios/{id}/like:
+    post:
+      parameters:
+      - description: Portfolio ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.likeResponse'
+      security:
+      - BearerAuth: []
+      summary: Like or unlike a portfolio
+      tags:
+      - portfolios
+  /portfolios/{id}/versions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Portfolio ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New version
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.addVersionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.VersionDTO'
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add a new version to a portfolio
+      tags:
+      - portfolios
+  /roasts:
+    get:
+      parameters:
+      - description: top | new
+        in: query
+        name: sort
+        type: string
+      - description: Max results (default 30)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.RoastDTO'
+            type: array
+      summary: List community roasts
+      tags:
+      - roasts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Roast content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.createRoastRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.RoastDTO'
+      security:
+      - BearerAuth: []
+      summary: Post a roast
+      tags:
+      - roasts
+  /stats/summary:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.StatsSummary'
+      summary: Platform activity summary
+      tags:
+      - meta
+  /users/{username}:
+    get:
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.userProfileResponse'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a user's public profile
+      tags:
+      - users
+  /users/{username}/portfolios:
+    get:
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.PortfolioSummary'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List a user's portfolios
+      tags:
+      - users
+  /users/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.userProfileResponse'
+      security:
+      - BearerAuth: []
+      summary: Current user's profile with stats
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Fields to update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.updateMeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.UserPublic'
+      security:
+      - BearerAuth: []
+      summary: Update my profile
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and your JWT.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
