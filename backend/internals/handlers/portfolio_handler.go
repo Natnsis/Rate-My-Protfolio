@@ -135,6 +135,12 @@ func (h *Handler) GetPortfolio(c *gin.Context) {
 		fail(c, http.StatusNotFound, "portfolio has no versions")
 		return
 	}
+	if len(p.Versions) > 0 {
+		latest := p.Versions[len(p.Versions)-1]
+		if latest.ProjectURL != "" && latest.UIRating == 0 && latest.UXRating == 0 && latest.CodeRating == 0 {
+			h.evaluateVersionAsync(latest.ID, p.Title, latest.ProjectURL, p.Tags, latest.Note)
+		}
+	}
 	versions := make([]VersionDTO, 0, len(p.Versions))
 	for _, v := range p.Versions {
 		versions = append(versions, toVersionDTO(v))
@@ -246,6 +252,9 @@ func (h *Handler) AddVersion(c *gin.Context) {
 // evaluateVersionAsync keeps publishing fast while allowing scores to appear
 // as soon as the AI provider responds. A failed evaluation leaves scores at 0.
 func (h *Handler) evaluateVersionAsync(versionID uint, title, projectURL, tags, note string) {
+	if strings.TrimSpace(projectURL) == "" {
+		return
+	}
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()

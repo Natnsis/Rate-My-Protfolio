@@ -28,6 +28,8 @@
 	let loading = $state(true);
 	let errorMsg = $state('');
 	let posting = $state(false);
+	let scorePollAttempts = 0;
+	let scorePoll: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
 		auth.requireAuth();
@@ -46,6 +48,14 @@
 			versionIndex = detail.versions.length - 1;
 			liked = detail.likedByMe;
 			likeCount = detail.likeCount;
+			const evaluated = detail.versions.some((v) => v.uiRating > 0 || v.uxRating > 0 || v.codeRating > 0);
+			if (detail.versions.at(-1)?.projectUrl && !evaluated && scorePollAttempts < 8) {
+				scorePollAttempts += 1;
+				clearTimeout(scorePoll);
+				scorePoll = setTimeout(() => load(id), 2000);
+			} else {
+				scorePollAttempts = 0;
+			}
 		} catch (err) {
 			errorMsg = err instanceof ApiError ? err.message : 'Could not load this portfolio.';
 		} finally {
@@ -54,8 +64,13 @@
 	}
 
 	$effect(() => {
-		if (postId) load(postId);
+		if (postId) {
+			scorePollAttempts = 0;
+			load(postId);
+		}
 	});
+
+	$effect(() => () => clearTimeout(scorePoll));
 
 	const version = $derived(post?.versions[versionIndex]);
 

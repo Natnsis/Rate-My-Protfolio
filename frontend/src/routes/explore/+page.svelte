@@ -1,13 +1,13 @@
 <script lang="ts">
 	import AppChrome from '$lib/components/AppChrome.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
-	import Screenshot from '$lib/components/Screenshot.svelte';
 	import {
 		MagnifyingGlassIcon,
 		ArrowClockwiseIcon,
 		CaretDownIcon,
 		StackIcon,
 		HeartIcon,
+		ChatCircleIcon,
 		ArrowRightIcon,
 		ArrowCounterClockwiseIcon,
 		ArrowSquareOutIcon,
@@ -38,8 +38,8 @@
 	const sortParams = ['latest', 'mostliked', 'mostversions'];
 
 	const sortLabel = $derived(sorts[sortIndex]);
-	const allShown = $derived(shown >= portfolios.length);
-	const visible = $derived(portfolios.slice(0, shown));
+	const allShown = $derived(filter === 'All' || shown >= portfolios.length);
+	const visible = $derived(filter === 'All' ? portfolios : portfolios.slice(0, shown));
 
 	$effect(() => {
 		auth.requireAuth();
@@ -187,27 +187,33 @@
 		{:else}
 			<div class="explore-grid">
 				{#each visible as ep}
-					<div
-						class="explore-card"
-						style="background:white; border-radius:8px; overflow:hidden; box-shadow:var(--df-shadow-1); display:flex; flex-direction:column; align-self:start;"
-					>
-						{#if ep.latestVersion.projectUrl}
-							<div class="explore-card-media">
-								<Screenshot
-									src={ep.latestVersion.screenshotUrl}
-									alt={`${ep.title} screenshot`}
-									shape="rect"
-									class="explore-card-image"
-									style="width:100%; display:block;"
-								/>
-								{#if ep.likeCount > 200}
-								<div
-									style="position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.92); color:var(--df-ink); font-size:11.5px; font-weight:600; padding:6px 13px; border-radius:999px;"
-									>Featured</div
-								>
-								{/if}
-							</div>
-						{/if}
+					<a href={`/post/${ep.id}`} class="explore-card" style="display:flex; flex-direction:column; align-self:start; text-decoration:none; color:inherit;">
+						<div class="explore-card-media">
+							{#if ep.latestVersion.projectUrl}
+								<iframe
+									src={ep.latestVersion.projectUrl}
+									class="explore-card-live-preview"
+									loading="lazy"
+									tabindex="-1"
+									title={`${ep.title} mini preview`}
+								></iframe>
+							{:else}
+								<div class="explore-card-placeholder">
+									<div class="explore-card-placeholder-initials">{ep.user.initials}</div>
+									<div class="explore-card-placeholder-name">{ep.title}</div>
+									{#if ep.tags.length > 0}
+										<div class="explore-card-placeholder-tags">
+											{#each ep.tags.slice(0, 3) as tag}
+												<span class="explore-tag explore-tag--light">{tag}</span>
+											{/each}
+										</div>
+									{/if}
+								</div>
+							{/if}
+							{#if ep.likeCount > 200}
+								<div class="explore-card-featured-badge">Featured</div>
+							{/if}
+						</div>
 
 						<div class="explore-card-body">
 							<div class="explore-card-title">{ep.title}</div>
@@ -223,32 +229,39 @@
 									<button
 										type="button"
 										class="explore-card-action"
-										onclick={() => openPreview(ep.latestVersion.projectUrl!, ep.title)}
+										onclick={(e) => { e.preventDefault(); openPreview(ep.latestVersion.projectUrl!, ep.title); }}
 										aria-label={`Preview ${ep.title}`}
 									>
-										View portfolio
-										<ArrowRightIcon size={13} color="currentColor" weight="regular" />
+										Preview
+										<ArrowSquareOutIcon size={13} color="currentColor" weight="regular" />
 									</button>
-								{:else}
-									<a href={`/post/${ep.id}`} class="explore-card-action" aria-label={`View ${ep.title}`}>
-										View portfolio
-										<ArrowRightIcon size={13} color="currentColor" weight="regular" />
-									</a>
 								{/if}
 							</div>
+
+							{#if ep.tags.length > 0}
+								<div class="explore-card-tags">
+									{#each ep.tags.slice(0, 3) as tag}
+										<span class="explore-tag">{tag}</span>
+									{/each}
+								</div>
+							{/if}
 
 							<div class="explore-card-stats">
 								<div class="explore-card-stat">
 									<StackIcon size={14} color="currentColor" weight="regular" />
-									<span style="font-size:12.5px;">{ep.versionCount} versions</span>
+									<span style="font-size:12.5px;">{ep.versionCount} version{ep.versionCount !== 1 ? 's' : ''}</span>
 								</div>
 								<div class="explore-card-stat">
 									<HeartIcon size={14} color="currentColor" weight="regular" />
 									<span style="font-size:12.5px;">{ep.likeCount}</span>
 								</div>
+								<div class="explore-card-stat">
+									<ChatCircleIcon size={14} color="currentColor" weight="regular" />
+									<span style="font-size:12.5px;">{ep.commentCount}</span>
+								</div>
 							</div>
 						</div>
-					</div>
+					</a>
 				{/each}
 			</div>
 
@@ -400,12 +413,16 @@
 		pointer-events: none;
 		background: linear-gradient(transparent, rgb(20 27 39 / 10%));
 	}
-	:global(.explore-card-image) {
+	.explore-card-live-preview {
+		display: block;
+		width: 100%;
 		height: 188px !important;
-		object-fit: cover;
+		border: 0;
+		background: white;
 		transition: transform 320ms ease;
+		pointer-events: none;
 	}
-	.explore-card:hover :global(.explore-card-image) {
+	.explore-card:hover .explore-card-live-preview {
 		transform: scale(1.025);
 	}
 	.explore-card-body {
@@ -562,7 +579,7 @@
 			grid-template-columns: 1fr;
 			gap: 16px !important;
 		}
-		:global(.explore-card-image) {
+		.explore-card-live-preview {
 			height: 178px !important;
 		}
 		.explore-card-body {
