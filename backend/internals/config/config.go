@@ -22,7 +22,7 @@ type Config struct {
 	JWTSecret      string
 	JWTExpiry      time.Duration
 	CORSOrigins    []string
-	AnthropicKey   string
+	GroqKey        string
 	AIModel        string
 	IsProduction   bool
 	JWTSecretIsDev bool
@@ -35,8 +35,8 @@ func Load() Config {
 		Port:         getEnv("PORT", "8080"),
 		DatabaseURL:  getEnv("DATABASE_URL", placeholderDBURL),
 		JWTSecret:    getEnv("JWT_SECRET", "devfolio-dev-secret-change-me"),
-		AnthropicKey: os.Getenv("ANTHROPIC_API_KEY"),
-		AIModel:      getEnv("AI_MODEL", "claude-sonnet-5"),
+		GroqKey:  os.Getenv("GROQ_API_KEY"),
+		AIModel:  getEnv("AI_MODEL", "openai/gpt-oss-120b"),
 		IsProduction: getEnv("APP_ENV", "development") == "production",
 	}
 

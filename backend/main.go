@@ -38,8 +38,8 @@ func main() {
 	if cfg.DatabaseIsStub {
 		log.Println("[config] WARNING: DATABASE_URL is a placeholder — set it to your Neon connection string in backend/.env")
 	}
-	if cfg.AnthropicKey == "" {
-		log.Println("[config] ANTHROPIC_API_KEY not set — AI Studio will respond with 503 until it is")
+	if cfg.GroqKey == "" {
+		log.Println("[config] GROQ_API_KEY not set — AI Studio will respond with 503 until it is")
 	}
 
 	gormDB, err := db.Connect(cfg.DatabaseURL)
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	jwtManager := auth.NewManager(cfg.JWTSecret, cfg.JWTExpiry)
-	aiClient := ai.New(cfg.AnthropicKey, cfg.AIModel)
+	aiClient := ai.New(cfg.GroqKey, cfg.AIModel)
 	h := handlers.New(gormDB, jwtManager, cfg, aiClient)
 
 	engine := router.New(h, cfg.CORSOrigins)
