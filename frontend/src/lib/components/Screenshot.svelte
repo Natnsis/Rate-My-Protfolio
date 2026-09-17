@@ -36,6 +36,7 @@
 		class={klass}
 		style="border-radius:{corner}; object-fit:cover; display:block; {style}"
 		draggable="false"
+		loading="lazy"
 	/>
 {:else}
 	<div

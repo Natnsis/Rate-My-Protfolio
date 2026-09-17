@@ -8,6 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// demoPortfolioTitles are the sample portfolios Seed() creates; they are
+// flagged Demo: true, and markDemoPortfolios reuses this list to retro-label
+// rows created before the Demo column existed.
+var demoPortfolioTitles = []string{
+	"Lumen Dashboard", "Fernweg Travel App", "Ledger CLI", "Nimbus Notes",
+	"Atlas Design Kit", "Pulse Analytics", "Kettle Recipes", "Portfolio Site", "Chess Trainer",
+}
+
 // Seed populates a fresh database with demo users, portfolios, versions,
 // likes, comments and roasts so the app feels alive on first run.
 // Every seeded account uses the password "password123".
@@ -122,7 +130,7 @@ func Seed(gdb *gorm.DB) error {
 
 	for _, sp := range portfolios {
 		owner := byName[sp.owner]
-		p := Portfolio{UserID: owner.ID, Title: sp.title, Tags: sp.tags, CreatedAt: now.Add(-time.Duration(sp.versions[0].hoursAgo+24) * time.Hour)}
+		p := Portfolio{UserID: owner.ID, Title: sp.title, Tags: sp.tags, Demo: true, CreatedAt: now.Add(-time.Duration(sp.versions[0].hoursAgo+24) * time.Hour)}
 		if err := gdb.Create(&p).Error; err != nil {
 			return err
 		}

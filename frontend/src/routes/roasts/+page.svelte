@@ -2,6 +2,7 @@
 	import AppChrome from '$lib/components/AppChrome.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
 	import Screenshot from '$lib/components/Screenshot.svelte';
+	import Markdown from '$lib/components/Markdown.svelte';
 	import {
 		FlameIcon,
 		ArrowRightIcon,
@@ -19,9 +20,6 @@
 	const line = 'var(--df-line)';
 	const muted = 'var(--df-muted)';
 	const warm = 'var(--df-warm)';
-
-	let sort = $state('Top all-time');
-	const sorts = ['Top all-time', 'This week'];
 
 	let roasts = $state<Roast[]>([]);
 	let topDevs = $state<LeaderboardRow[]>([]);
@@ -49,9 +47,8 @@
 		loading = true;
 		errorMsg = '';
 		try {
-			const sortParam = sort === 'This week' ? 'new' : 'top';
 			const [list, board] = await Promise.all([
-				apiFetch<Roast[]>(`/roasts?sort=${sortParam}&limit=30`),
+				apiFetch<Roast[]>(`/roasts?sort=top&limit=30`),
 				apiFetch<LeaderboardRow[]>('/leaderboard?timeframe=alltime&limit=2')
 			]);
 			roasts = list;
@@ -64,7 +61,6 @@
 	}
 
 	$effect(() => {
-		sort;
 		load();
 	});
 
@@ -114,6 +110,7 @@
 
 	<div class="page-container">
 		<div
+			class="roasts-hero"
 			style="display:flex; align-items:end; justify-content:space-between; gap:32px; margin-bottom:22px; flex-wrap:wrap;"
 		>
 			<div>
@@ -138,18 +135,11 @@
 			</a>
 		</div>
 
-		<div
-			style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:38px;"
-		>
-			{#each sorts as s}
-				<button
-					type="button"
-					onclick={() => (sort = s)}
-					style="font-family:inherit; background:{sort === s ? ink : 'transparent'}; color:{sort === s ? 'white' : ink}; border:1px solid {sort === s ? ink : line}; font-size:13px; font-weight:500; padding:10px 18px; border-radius:999px; cursor:pointer; white-space:nowrap;"
-				>
-					{s}
-				</button>
-			{/each}
+		<div style="display:flex; align-items:center; gap:8px; margin-bottom:26px;">
+			<ChartBarIcon size={15} color="var(--df-muted)" weight="regular" />
+			<span style="font-size:13px; color:var(--df-muted);"
+				>Top-liked feedback across the platform, sorted by helpful votes.</span
+			>
 		</div>
 
 		<div class="roasts-layout" style="display:grid; grid-template-columns:minmax(0,1fr) 252px; gap:22px; align-items:start;">
@@ -217,7 +207,7 @@
 					>
 				{:else if roasts.length === 0}
 					<div style="background:white; border-radius:8px; padding:60px 24px; text-align:center; color:var(--df-muted);">
-						No roasts yet — be the first to leave one.
+						No roasts yet. Be the first to leave one.
 					</div>
 				{:else}
 					{#each roasts as e}
@@ -258,10 +248,9 @@
 									<div style="font-size:14.5px; font-weight:600; letter-spacing:-0.015em; margin-bottom:6px;"
 										>{e.title}</div
 									>
-									<p
-										style="font-size:13.5px; line-height:1.6; color:var(--df-muted); margin:0 0 12px 0; text-wrap:pretty;"
-										>{e.body}</p
-									>
+									<div style="font-size:13.5px; color:var(--df-muted); margin:0 0 12px 0;">
+										<Markdown text={e.body} />
+									</div>
 									<div style="display:flex; align-items:center; gap:16px;">
 										<div style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--df-muted);">
 											<ChartBarIcon size={14} color="currentColor" weight="regular" />
@@ -348,10 +337,21 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 56px 48px 64px 48px;
+		--hd-offset: 76px;
+	}
+	.roasts-hero {
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 22px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
 	}
 	@media (max-width: 900px) {
 		.page-container {
 			padding: 32px 24px 48px 24px;
+			--hd-offset: 60px;
 		}
 		.roasts-layout {
 			grid-template-columns: 1fr !important;
@@ -360,6 +360,7 @@
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 24px 16px 40px 16px;
+			--hd-offset: 56px;
 		}
 	}
 </style>

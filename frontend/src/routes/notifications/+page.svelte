@@ -29,6 +29,7 @@
 	let notifications = $state<Notification[]>([]);
 	let loading = $state(true);
 	let errorMsg = $state('');
+	let updating = $state(false);
 
 	$effect(() => {
 		auth.requireAuth();
@@ -57,13 +58,33 @@
 	const earlier = $derived(shown.filter((n) => Date.now() - new Date(n.createdAt).getTime() >= dayMs));
 
 	async function markAllRead() {
+		if (counts === 0 || updating) return;
 		const previous = notifications;
 		notifications = notifications.map((n) => ({ ...n, read: true }));
+		updating = true;
 		try {
 			await apiFetch('/notifications/read-all', { method: 'POST' });
-		} catch {
+		} catch (err) {
 			notifications = previous;
+			errorMsg = err instanceof ApiError ? err.message : 'Could not update notifications.';
+		} finally {
+			updating = false;
 		}
+	}
+
+	async function openNotification(event: MouseEvent, notification: Notification) {
+		event.preventDefault();
+		const destination = event.currentTarget instanceof HTMLAnchorElement ? event.currentTarget.href : '/notifications';
+		if (!notification.read) {
+			const previous = notifications;
+			notifications = notifications.map((n) => (n.id === notification.id ? { ...n, read: true } : n));
+			try {
+				await apiFetch(`/notifications/${notification.id}/read`, { method: 'POST' });
+			} catch {
+				notifications = previous;
+			}
+		}
+		window.location.assign(destination);
 	}
 
 	const icons: Record<Notification['kind'], typeof HeartIcon> = {
@@ -82,7 +103,8 @@
 
 	<div class="page-container">
 		<div
-			style="display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:22px; flex-wrap:wrap;"
+			class="notif-header"
+			style="display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:16px; flex-wrap:wrap;"
 		>
 			<div>
 				<div
@@ -94,11 +116,12 @@
 			<button
 				type="button"
 				onclick={markAllRead}
+				disabled={counts === 0 || updating}
 				class="mono"
 				style="display:flex; align-items:center; gap:8px; border:1px solid var(--df-line); background:white; color:var(--df-ink); border-radius:999px; padding:10px 18px; font-size:12px; font-weight:500; cursor:pointer; white-space:nowrap;"
 			>
 				<CheckIcon size={13} color="currentColor" weight="regular" />
-				Mark all read
+				{updating ? 'Marking…' : 'Mark all read'}
 			</button>
 		</div>
 
@@ -134,6 +157,8 @@
 						{@const Icon = icons[n.kind]}
 						<a
 							href={n.portfolio ? `/post/${n.portfolio.id}` : '/notifications'}
+							onclick={(event) => openNotification(event, n)}
+							aria-label={`Open notification: ${n.message}`}
 							style="color:inherit; background:white; border-radius:8px; padding:16px 18px; margin-bottom:12px; display:flex; gap:14px; align-items:center; box-shadow:var(--df-shadow-1);"
 						>
 							<div
@@ -166,6 +191,8 @@
 						{@const Icon = icons[n.kind]}
 						<a
 							href={n.portfolio ? `/post/${n.portfolio.id}` : '/notifications'}
+							onclick={(event) => openNotification(event, n)}
+							aria-label={`Open notification: ${n.message}`}
 							style="color:inherit; background:white; border-radius:8px; padding:16px 18px; margin-bottom:12px; display:flex; gap:14px; align-items:center; box-shadow:var(--df-shadow-1);"
 						>
 							<div
@@ -198,11 +225,21 @@
 		max-width: 800px;
 		margin: 0 auto;
 		padding: 56px 40px 64px 40px;
+		--hd-offset: 76px;
+	}
+	.notif-header {
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 16px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
 	}
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 28px 16px 40px 16px;
+			--hd-offset: 56px;
 		}
 	}
 </style>
-

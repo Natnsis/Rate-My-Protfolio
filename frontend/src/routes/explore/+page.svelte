@@ -132,15 +132,23 @@
 			<div class="explore-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px;">
 				{#each visible as ep}
 					<div
-						style="background:white; border-radius:8px; overflow:hidden; box-shadow:var(--df-shadow-1); display:flex; flex-direction:column;"
+						class="explore-card"
+						style="background:white; border-radius:8px; overflow:hidden; box-shadow:var(--df-shadow-1); display:flex; flex-direction:column; align-self:start;"
 					>
-						<div style="position:relative;">
+						<div class="explore-card-media">
 							<Screenshot
 								src={ep.latestVersion.screenshotUrl}
 								alt="Portfolio screenshot"
 								shape="rect"
-								style="width:100%; height:170px; display:block;"
+								class="explore-card-image"
+								style="width:100%; display:block;"
 							/>
+							{#if ep.demo}
+								<div
+									style="position:absolute; top:14px; left:14px; background:rgba(255,255,255,0.94); border:1px solid var(--df-line); color:var(--df-muted); font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.04em; padding:6px 12px; border-radius:999px;"
+									>sample data</div
+								>
+							{/if}
 							{#if ep.likeCount > 200}
 								<div
 									style="position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.92); color:var(--df-ink); font-size:11.5px; font-weight:600; padding:6px 13px; border-radius:999px;"
@@ -149,10 +157,11 @@
 							{/if}
 						</div>
 
-						<div style="padding:18px 20px 16px 20px; display:flex; flex-direction:column; flex:1;">
-							<div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+						<div class="explore-card-body">
+							<div class="explore-card-title">{ep.title}</div>
+							<div class="explore-card-author">
 								<Avatar name={ep.user.name} size={42} />
-								<div style="flex:1; min-width:0;">
+								<div class="explore-card-person">
 									<div style="font-size:14.5px; font-weight:600; letter-spacing:-0.015em;"
 										>{ep.user.name}</div
 									>
@@ -160,19 +169,19 @@
 								</div>
 								<a
 									href={`/post/${ep.id}`}
-									style="display:flex; align-items:center; gap:7px; border:1px solid var(--df-line); border-radius:999px; padding:8px 14px; font-size:12.5px; font-weight:500; white-space:nowrap; color:var(--df-ink);"
+									class="explore-card-action"
 								>
 									View portfolio
 									<ArrowRightIcon size={13} color="currentColor" weight="regular" />
 								</a>
 							</div>
 
-							<div style="display:flex; align-items:center; gap:18px; margin-top:auto; color:var(--df-muted);">
-								<div style="display:flex; align-items:center; gap:6px;">
+							<div class="explore-card-stats">
+								<div class="explore-card-stat">
 									<StackIcon size={14} color="currentColor" weight="regular" />
 									<span style="font-size:12.5px;">{ep.versionCount} versions</span>
 								</div>
-								<div style="display:flex; align-items:center; gap:6px;">
+								<div class="explore-card-stat">
 									<HeartIcon size={14} color="currentColor" weight="regular" />
 									<span style="font-size:12.5px;">{ep.likeCount}</span>
 								</div>
@@ -203,6 +212,7 @@
 		max-width: 1320px;
 		margin: 0 auto;
 		padding: 56px 48px 64px 48px;
+		--hd-offset: 76px;
 	}
 	.explore-header {
 		display: grid;
@@ -210,10 +220,106 @@
 		gap: 48px;
 		align-items: start;
 		margin-bottom: 38px;
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 22px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
+	}
+	.explore-grid {
+		align-items: start;
+	}
+	.explore-card {
+		border-radius: 14px !important;
+		border: 1px solid color-mix(in oklch, var(--df-line) 88%, white);
+		box-shadow: 0 1px 2px rgb(22 29 42 / 3%), 0 8px 24px rgb(22 29 42 / 4%) !important;
+		transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+	}
+	.explore-card:hover {
+		transform: translateY(-3px);
+		border-color: color-mix(in oklch, var(--df-accent) 30%, var(--df-line));
+		box-shadow: 0 14px 34px rgb(22 29 42 / 10%) !important;
+	}
+	.explore-card-media {
+		position: relative;
+		overflow: hidden;
+		background: var(--df-ink-soft);
+	}
+	.explore-card-media::after {
+		content: '';
+		position: absolute;
+		inset: auto 0 0;
+		height: 34%;
+		pointer-events: none;
+		background: linear-gradient(transparent, rgb(20 27 39 / 10%));
+	}
+	:global(.explore-card-image) {
+		height: 188px !important;
+		object-fit: cover;
+		transition: transform 320ms ease;
+	}
+	.explore-card:hover :global(.explore-card-image) {
+		transform: scale(1.025);
+	}
+	.explore-card-body {
+		display: flex;
+		flex-direction: column;
+		padding: 18px 20px 16px;
+	}
+	.explore-card-title {
+		margin-bottom: 16px;
+		font-size: 15px;
+		font-weight: 700;
+		letter-spacing: -0.022em;
+		line-height: 1.2;
+	}
+	.explore-card-author {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.explore-card-person {
+		flex: 1;
+		min-width: 0;
+	}
+	.explore-card-action {
+		display: flex;
+		align-items: center;
+		gap: 7px;
+		border: 1px solid var(--df-line);
+		border-radius: 999px;
+		padding: 8px 13px;
+		font-size: 12px;
+		font-weight: 600;
+		white-space: nowrap;
+		color: var(--df-ink);
+		background: white;
+	}
+	.explore-card-action:hover {
+		background: var(--df-ink);
+		border-color: var(--df-ink);
+		color: white;
+	}
+	.explore-card-stats {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+		margin-top: 17px;
+		padding-top: 14px;
+		border-top: 1px solid var(--df-ink-soft);
+		color: var(--df-muted);
+	}
+	.explore-card-stat {
+		display: flex;
+		align-items: center;
+		gap: 6px;
 	}
 	@media (max-width: 900px) {
 		.page-container {
 			padding: 32px 24px 48px 24px;
+			--hd-offset: 60px;
 		}
 		.explore-header {
 			grid-template-columns: 1fr;
@@ -223,7 +329,22 @@
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 24px 16px 40px 16px;
+			--hd-offset: 56px;
+		}
+		.explore-grid {
+			gap: 16px !important;
+		}
+		:global(.explore-card-image) {
+			height: 178px !important;
+		}
+		.explore-card-body {
+			padding: 16px;
+		}
+		.explore-card-title {
+			margin-bottom: 14px;
+		}
+		.explore-card-action {
+			padding: 8px 12px;
 		}
 	}
 </style>
-

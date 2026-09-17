@@ -43,6 +43,52 @@ a:hover {
 	color: var(--df-accent);
 }
 
+/* Small interaction details shared by every screen. */
+a,
+button,
+input,
+textarea {
+	-webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+	transition:
+		color 150ms ease,
+		background-color 150ms ease,
+		border-color 150ms ease,
+		box-shadow 150ms ease,
+		transform 150ms ease;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+	outline: 3px solid color-mix(in oklch, var(--df-accent) 36%, white);
+	outline-offset: 3px;
+}
+
+button:disabled {
+	cursor: not-allowed !important;
+	opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}
+
 .mono {
 	font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+}
+
+@media (max-width: 640px) {
+	div[style*="padding-left:76px"] {
+		padding-left: 0 !important;
+	}
 }

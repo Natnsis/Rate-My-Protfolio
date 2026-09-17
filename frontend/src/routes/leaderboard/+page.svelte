@@ -310,6 +310,7 @@
 		max-width: 1360px;
 		margin: 0 auto;
 		padding: 56px 48px 64px 48px;
+		--hd-offset: 76px;
 	}
 	.board-header {
 		display: grid;
@@ -317,10 +318,18 @@
 		gap: 48px;
 		align-items: center;
 		margin-bottom: 34px;
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 22px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
 	}
 	@media (max-width: 900px) {
 		.page-container {
 			padding: 32px 24px 48px 24px;
+			--hd-offset: 60px;
 		}
 		.board-header {
 			grid-template-columns: 1fr;
@@ -332,6 +341,7 @@
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 24px 16px 40px 16px;
+			--hd-offset: 56px;
 		}
 	}
 	@media (max-width: 760px) {

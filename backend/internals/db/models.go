@@ -53,7 +53,8 @@ type Portfolio struct {
 	UserID    uint      `json:"userId" gorm:"index;not null"`
 	User      User      `json:"user"`
 	Title     string    `json:"title" gorm:"not null"`
-	Tags      string    `json:"-"` // comma-separated; exposed as []string in DTOs
+	Tags      string    `json:"-"`                               // comma-separated; exposed as []string in DTOs
+	Demo      bool      `json:"demo" gorm:"default:false;index"` // seeded sample data, not a real project
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 

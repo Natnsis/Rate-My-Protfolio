@@ -73,6 +73,7 @@ type PortfolioSummary struct {
 	LikeCount     int64      `json:"likeCount"`
 	CommentCount  int64      `json:"commentCount"`
 	LikedByMe     bool       `json:"likedByMe"`
+	Demo          bool       `json:"demo"` // seeded sample data, not a real project
 }
 
 // PortfolioDetail extends PortfolioSummary with the full version history.
@@ -107,6 +108,7 @@ func hydratePortfolios(gdb *gorm.DB, portfolios []db.Portfolio, viewerID uint) [
 
 	likeCounts := map[uint]int64{}
 	commentCounts := map[uint]int64{}
+	versionCounts := map[uint]int{}
 	likedByViewer := map[uint]bool{}
 
 	if len(ids) > 0 {
@@ -126,6 +128,12 @@ func hydratePortfolios(gdb *gorm.DB, portfolios []db.Portfolio, viewerID uint) [
 			commentCounts[r.PortfolioID] = r.Count
 		}
 
+		var versionRows []countRow
+		gdb.Table("versions").Select("portfolio_id, count(*) as count").Where("portfolio_id IN ?", ids).Group("portfolio_id").Scan(&versionRows)
+		for _, r := range versionRows {
+			versionCounts[r.PortfolioID] = int(r.Count)
+		}
+
 		if viewerID != 0 {
 			var liked []uint
 			gdb.Table("likes").Select("portfolio_id").Where("portfolio_id IN ? AND user_id = ?", ids, viewerID).Scan(&liked)
@@ -140,15 +148,21 @@ func hydratePortfolios(gdb *gorm.DB, portfolios []db.Portfolio, viewerID uint) [
 		if len(p.Versions) == 0 {
 			continue
 		}
-		latest := p.Versions[len(p.Versions)-1]
+		latest := p.Versions[0]
+		for _, v := range p.Versions[1:] {
+			if v.Number > latest.Number {
+				latest = v
+			}
+		}
 		out = append(out, PortfolioSummary{
 			ID: p.ID, Title: p.Title, Tags: splitTags(p.Tags), CreatedAt: p.CreatedAt, UpdatedAt: p.UpdatedAt,
 			User:          toUserPublic(p.User),
 			LatestVersion: toVersionDTO(latest),
-			VersionCount:  len(p.Versions),
+			VersionCount:  versionCounts[p.ID],
 			LikeCount:     likeCounts[p.ID],
 			CommentCount:  commentCounts[p.ID],
 			LikedByMe:     likedByViewer[p.ID],
+			Demo:          p.Demo,
 		})
 	}
 	return out

@@ -118,7 +118,15 @@
 						<div style="display:flex; align-items:center; gap:12px; min-width:0;">
 							<Avatar name={post.user.name} size={44} />
 							<div style="min-width:0;">
-								<div style="font-size:15px; font-weight:700;">{post.title}</div>
+								<div class="post-title-row" style="display:flex; align-items:center; gap:8px;">
+									<div style="font-size:15px; font-weight:700;">{post.title}</div>
+									{#if post.demo}
+										<span
+											style="border:1px solid var(--df-line); color:var(--df-muted); font-family:var(--font-mono); font-size:10px; letter-spacing:0.04em; padding:3px 8px; border-radius:999px; white-space:nowrap;"
+											>sample data</span
+										>
+									{/if}
+								</div>
 								<div style="font-size:12.5px; color:var(--df-muted);"
 									>by {post.user.name} · @{post.user.username}</div
 								>
@@ -235,7 +243,7 @@
 							</div>
 						</div>
 					{:else}
-						<div style="font-size:13px; color:var(--df-muted);">No comments yet — be the first.</div>
+						<div style="font-size:13px; color:var(--df-muted);">No comments yet. Be the first.</div>
 					{/each}
 				</div>
 			{/if}

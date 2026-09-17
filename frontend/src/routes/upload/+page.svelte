@@ -1,7 +1,6 @@
 <script lang="ts">
 	import AppChrome from '$lib/components/AppChrome.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
-	import landingBg from '$lib/assets/landing1.jpg';
 	import {
 		PaperPlaneTiltIcon,
 		LinkSimpleIcon
@@ -133,16 +132,10 @@
 			</div>
 
 			<div>
-				<div style="position:relative; border-radius:8px; border:1px solid var(--df-line); overflow:hidden; margin-bottom:24px;">
-				<img
-					src={landingBg}
-					alt=""
-					style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none;"
-				/>
-				<div style="position:relative; z-index:1; background:rgba(255,255,255,0.82); backdrop-filter:blur(2px); padding:38px 32px; text-align:center;">
-					<div style="font-size:18px; font-weight:700; margin-bottom:4px;">Link your project</div>
+				<div style="border-radius:8px; border:1px solid var(--df-line); background:white; padding:38px 32px; text-align:center; margin-bottom:24px;">
+				<div style="font-size:18px; font-weight:700; margin-bottom:4px;">Link your project</div>
 					<div style="font-size:13.5px; color:var(--df-muted); margin-bottom:20px; max-width:380px; margin-left:auto; margin-right:auto;"
-						>Drop the live URL. Screenshot auto-capture is on our roadmap — for now we'll pair it with a placeholder cover.</div
+						>Drop the live URL and we'll auto-capture a real screenshot for the cover.</div
 					>
 					<div style="max-width:480px; margin:0 auto; display:flex; gap:10px; align-items:center;">
 						<div style="flex:1; position:relative;">
@@ -160,7 +153,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
 
 				{#if kind === 'First post'}
 					<div style="margin-bottom:18px;">
@@ -213,7 +205,7 @@
 						{#if loadingPortfolios}
 							<div style="font-size:13px; color:var(--df-muted);">Loading your portfolios…</div>
 						{:else if myPortfolios.length === 0}
-							<div style="font-size:13px; color:var(--df-muted);">You don't have a portfolio yet — switch to "First post".</div>
+							<div style="font-size:13px; color:var(--df-muted);">You don't have a portfolio yet. Switch to "First post".</div>
 						{:else}
 							<div style="display:flex; align-items:center; gap:12px;">
 								{#if selectedPortfolio}

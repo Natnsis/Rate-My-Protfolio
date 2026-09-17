@@ -45,6 +45,7 @@ export type PortfolioSummary = {
 	likeCount: number;
 	commentCount: number;
 	likedByMe: boolean;
+	demo: boolean;
 };
 
 export type PortfolioDetail = PortfolioSummary & {

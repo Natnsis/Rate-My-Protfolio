@@ -10,6 +10,7 @@ async function seedSession(page: import('@playwright/test').Page) {
 	expect(res.ok()).toBeTruthy();
 	const { token } = await res.json();
 	await page.addInitScript((t) => localStorage.setItem('devfolio_token', t), token);
+	return token as string;
 }
 
 test('landing page loads and links to auth', async ({ page }) => {
@@ -45,4 +46,51 @@ test('feed, explore and leaderboard render API data for a signed-in user', async
 	await page.goto(`${BASE}/leaderboard`);
 	await expect(page.getByText('TOP DEVELOPERS').first()).toBeVisible({ timeout: 20_000 });
 	await expect(page.getByText('Weekly').first()).toBeVisible();
+});
+
+test('notifications list for the signed-in user and can be marked read', async ({ page }) => {
+	const malik = await page.request.post(`${API}/auth/login`, {
+		data: { email: 'malik@devfolio.dev', password: 'password123' }
+	});
+	const { token: malikToken } = await malik.json();
+
+	for (let attempt = 0; attempt < 2; attempt++) {
+		const res = await page.request.post(`${API}/portfolios/1/like`, {
+			headers: { Authorization: `Bearer ${malikToken}` }
+		});
+		const { liked } = await res.json();
+		if (liked) break;
+	}
+
+	const ariaToken = await seedSession(page);
+	const notificationResponse = await page.request.get(`${API}/notifications`, {
+		headers: { Authorization: `Bearer ${ariaToken}` }
+	});
+	expect(notificationResponse.ok()).toBeTruthy();
+	const notifications = (await notificationResponse.json()) as Array<{
+		id: number;
+		message: string;
+		read: boolean;
+		portfolio?: { id: number };
+	}>;
+	const unread = notifications.find((notification) => !notification.read);
+	expect(unread).toBeTruthy();
+	await page.goto(`${BASE}/notifications`);
+
+	await expect(page.getByText('Notifications', { exact: true }).first()).toBeVisible({
+		timeout: 20_000
+	});
+	await expect(page.getByText('Malik Okoye').first()).toBeVisible({ timeout: 20_000 });
+	await page.getByRole('link', { name: `Open notification: ${unread!.message}` }).first().click();
+	await expect(page).toHaveURL(new RegExp(`/post/${unread!.portfolio?.id ?? ''}`), { timeout: 20_000 });
+
+	const updatedResponse = await page.request.get(`${API}/notifications`, {
+		headers: { Authorization: `Bearer ${ariaToken}` }
+	});
+	const updatedNotifications = (await updatedResponse.json()) as Array<{ id: number; read: boolean }>;
+	expect(updatedNotifications.find((notification) => notification.id === unread!.id)?.read).toBe(true);
+
+	await page.goto(`${BASE}/notifications`);
+	await page.getByRole('button', { name: 'Mark all read' }).click();
+	await expect(page.getByText('0 unread')).toBeVisible({ timeout: 20_000 });
 });

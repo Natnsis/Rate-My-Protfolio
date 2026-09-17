@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"sort"
 	"strings"
 
 	"foliohub/internals/db"
@@ -50,26 +49,42 @@ func toRoastDTO(r db.Roast, screenshot string) RoastDTO {
 //	@Success		200		{array}		RoastDTO
 //	@Router			/roasts [get]
 func (h *Handler) ListRoasts(c *gin.Context) {
-	var roasts []db.Roast
-	h.DB.Preload("User").Preload("Portfolio").Order("created_at DESC").Find(&roasts)
+	limit := queryInt(c, "limit", 30)
 
-	screenshots := map[uint]string{}
+	order := "created_at DESC"
+	if strings.EqualFold(c.DefaultQuery("sort", "top"), "top") {
+		order = "helpful DESC, created_at DESC"
+	}
+
+	var roasts []db.Roast
+	h.DB.Preload("User").Preload("Portfolio").Order(order).Limit(limit).Find(&roasts)
+
+	ids := make([]uint, 0, len(roasts))
+	seen := map[uint]bool{}
 	for _, r := range roasts {
-		if _, ok := screenshots[r.PortfolioID]; !ok {
-			screenshots[r.PortfolioID] = latestScreenshot(h.DB, r.PortfolioID)
+		if !seen[r.PortfolioID] {
+			seen[r.PortfolioID] = true
+			ids = append(ids, r.PortfolioID)
+		}
+	}
+	screenshots := map[uint]string{}
+	if len(ids) > 0 {
+		var rows []struct {
+			PortfolioID   uint
+			ScreenshotURL string
+		}
+		h.DB.Table("versions").
+			Select("DISTINCT ON (portfolio_id) portfolio_id, screenshot_url").
+			Where("portfolio_id IN ?", ids).
+			Order("portfolio_id, number DESC").
+			Scan(&rows)
+		for _, r := range rows {
+			screenshots[r.PortfolioID] = r.ScreenshotURL
 		}
 	}
 
-	if strings.EqualFold(c.DefaultQuery("sort", "top"), "top") {
-		sort.Slice(roasts, func(i, j int) bool { return roasts[i].Helpful > roasts[j].Helpful })
-	}
-
-	limit := queryInt(c, "limit", 30)
-	if limit > len(roasts) {
-		limit = len(roasts)
-	}
-	out := make([]RoastDTO, 0, limit)
-	for _, r := range roasts[:limit] {
+	out := make([]RoastDTO, 0, len(roasts))
+	for _, r := range roasts {
 		out = append(out, toRoastDTO(r, screenshots[r.PortfolioID]))
 	}
 	c.JSON(http.StatusOK, out)

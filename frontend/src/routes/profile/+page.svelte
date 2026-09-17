@@ -131,26 +131,26 @@
 		{:else if profile && stats}
 			<div
 				class="profile-card"
-				style="background:white; border-radius:8px; border:1px solid var(--df-line); padding:30px 32px; margin-bottom:22px; display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:40px; align-items:start; "
+				style="background:white; border-radius:8px; border:1px solid var(--df-line); padding:22px 26px; margin-bottom:22px; display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:32px; align-items:center; "
 			>
-				<div style="display:flex; gap:26px; min-width:0;">
-					<Avatar name={profile.name} size={88} style="flex-shrink:0;" />
+				<div style="display:flex; gap:20px; min-width:0;">
+					<Avatar name={profile.name} size={64} style="flex-shrink:0;" />
 					<div style="min-width:0;">
-						<div style="font-size:28px; font-weight:700; letter-spacing:-0.035em; line-height:1.1;"
+						<div style="font-size:22px; font-weight:700; letter-spacing:-0.03em; line-height:1.15;"
 							>{profile.name}</div
 						>
-						<div style="font-size:14px; color:var(--df-muted); margin-bottom:12px;">@{profile.username}</div>
+						<div style="font-size:13.5px; color:var(--df-muted); margin-bottom:8px;">@{profile.username}</div>
 						{#if profile.bio}
 							<div
-								style="font-size:14.5px; line-height:1.6; margin-bottom:14px; max-width:420px; text-wrap:pretty;"
+								style="font-size:14px; line-height:1.55; margin-bottom:10px; max-width:420px; text-wrap:pretty;"
 								>{profile.bio}</div
 							>
 						{/if}
 						{#if profile.location}
 							<div
-								style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--df-muted); margin-bottom:16px;"
+								style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--df-muted); margin-bottom:12px;"
 							>
-								<MapPinIcon size={14} color="currentColor" weight="regular" />
+								<MapPinIcon size={13} color="currentColor" weight="regular" />
 								{profile.location}
 							</div>
 						{/if}
@@ -173,35 +173,35 @@
 
 				<div>
 					<div
-						style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); border:1px solid var(--df-line); border-radius:8px; overflow:hidden; margin-bottom:16px;"
+						style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); border:1px solid var(--df-line); border-radius:8px; overflow:hidden; margin-bottom:12px;"
 					>
-						<div style="padding:18px 16px; border-right:1px solid var(--df-line);">
-							<div style="font-size:24px; font-weight:700; letter-spacing:-0.03em;">{stats.portfolioCount}</div>
-							<div style="font-size:11.5px; color:var(--df-muted); margin-top:3px;">Portfolios</div>
+						<div style="padding:12px 14px; border-right:1px solid var(--df-line);">
+							<div style="font-size:20px; font-weight:700; letter-spacing:-0.03em;">{stats.portfolioCount}</div>
+							<div style="font-size:11px; color:var(--df-muted); margin-top:2px;">Portfolios</div>
 						</div>
-						<div style="padding:18px 16px; border-right:1px solid var(--df-line);">
-							<div style="font-size:24px; font-weight:700; letter-spacing:-0.03em;">{stats.totalLikes}</div>
-							<div style="font-size:11.5px; color:var(--df-muted); margin-top:3px;">Total likes</div>
+						<div style="padding:12px 14px; border-right:1px solid var(--df-line);">
+							<div style="font-size:20px; font-weight:700; letter-spacing:-0.03em;">{stats.totalLikes}</div>
+							<div style="font-size:11px; color:var(--df-muted); margin-top:2px;">Total likes</div>
 						</div>
-						<div style="padding:18px 16px;">
-							<div style="font-size:24px; font-weight:700; letter-spacing:-0.03em;">{stats.rank > 0 ? `#${stats.rank}` : '—'}</div>
-							<div style="font-size:11.5px; color:var(--df-muted); margin-top:3px;">Rank</div>
+						<div style="padding:12px 14px;">
+							<div style="font-size:20px; font-weight:700; letter-spacing:-0.03em;">{stats.rank > 0 ? `#${stats.rank}` : '—'}</div>
+							<div style="font-size:11px; color:var(--df-muted); margin-top:2px;">Rank</div>
 						</div>
 					</div>
 					<a
 						href="/upload"
-						style="display:flex; align-items:center; gap:14px; background:var(--df-accent-soft); border-radius:8px; padding:16px 18px; color:var(--df-accent-deep);"
+						style="display:flex; align-items:center; gap:14px; background:var(--df-accent-soft); border-radius:8px; padding:12px 16px; color:var(--df-accent-deep);"
 					>
 						<div style="flex:1; min-width:0;">
-							<div style="font-size:13.5px; font-weight:600; margin-bottom:2px;">Keep shipping.</div>
-							<div style="font-size:12.5px; line-height:1.5;">Post a new version and climb the board.</div>
+							<div style="font-size:13px; font-weight:600; margin-bottom:1px;">Keep shipping.</div>
+							<div style="font-size:12px; line-height:1.45;">Post a new version and climb the board.</div>
 						</div>
 						<ArrowRightIcon size={15} color="currentColor" style="flex-shrink:0;" />
 					</a>
 				</div>
 			</div>
 
-			<div style="display:flex; gap:8px; margin-bottom:28px; border-bottom:1px solid var(--df-line); padding-bottom:18px;">
+			<div class="profile-tabs" style="display:flex; gap:8px; margin-bottom:28px; border-bottom:1px solid var(--df-line); padding-bottom:18px;">
 				{#each tabs as t}
 					<button
 						type="button"
@@ -281,7 +281,7 @@
 				<div style="max-width:760px; display:flex; flex-direction:column; gap:14px;">
 					{#if myRoasts.length === 0}
 						<div style="background:white; border-radius:8px; padding:48px 24px; text-align:center; color:var(--df-muted); box-shadow:var(--df-shadow-1);">
-							No feedback yet — post a portfolio and share it around.
+							No feedback yet. Post a portfolio and share it around.
 						</div>
 					{:else}
 						{#each myRoasts as r}
@@ -421,10 +421,21 @@
 		max-width: 1240px;
 		margin: 0 auto;
 		padding: 56px 48px 64px 48px;
+		--hd-offset: 76px;
+	}
+	.profile-tabs {
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 18px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
 	}
 	@media (max-width: 900px) {
 		.page-container {
 			padding: 32px 24px 48px 24px;
+			--hd-offset: 60px;
 		}
 		.profile-card {
 			grid-template-columns: 1fr !important;
@@ -436,6 +447,7 @@
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 24px 16px 40px 16px;
+			--hd-offset: 56px;
 		}
 	}
 	@media (max-width: 560px) {

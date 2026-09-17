@@ -54,6 +54,7 @@ func New(h *handlers.Handler, corsOrigins []string) *gin.Engine {
 
 		notifications := api.Group("/notifications")
 		notifications.GET("", auth.RequireAuth(h.JWT), h.ListNotifications)
+		notifications.POST("/:id/read", auth.RequireAuth(h.JWT), h.MarkNotificationRead)
 		notifications.POST("/read-all", auth.RequireAuth(h.JWT), h.MarkAllNotificationsRead)
 
 		aiGroup := api.Group("/ai")

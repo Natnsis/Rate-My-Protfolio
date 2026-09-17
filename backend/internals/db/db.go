@@ -40,5 +40,13 @@ func Connect(dsn string) (*gorm.DB, error) {
 		}
 	}
 
+	markDemoPortfolios(gormDB)
+
 	return gormDB, nil
+}
+
+// markDemoPortfolios flags portfolios created by the demo seed as sample data,
+// so databases seeded before the Demo column existed are labelled too.
+func markDemoPortfolios(gdb *gorm.DB) {
+	gdb.Model(&Portfolio{}).Where("demo = ? AND title IN ?", false, demoPortfolioTitles).Update("demo", true)
 }

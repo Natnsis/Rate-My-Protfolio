@@ -59,6 +59,7 @@
 
 <a
 	href={resolve('/feed')}
+	class="chrome-logo"
 	style="position:fixed; top:24px; left:28px; z-index:20; display:flex; align-items:center; gap:8px;"
 >
 	<div
@@ -67,12 +68,14 @@
 		D
 	</div>
 	<span
+		class="chrome-logo-text"
 		style="font-family:var(--font-mono); font-weight:500; font-size:15px; letter-spacing:-0.01em;"
 		>/DEVFOLIO</span
 	>
 </a>
 
 <div
+	class="chrome-pill"
 	style="position:fixed; top:24px; right:28px; z-index:20; display:flex; align-items:center; gap:10px; background:white; border-radius:999px; padding:6px 6px 6px 14px; box-shadow:var(--df-shadow-pill);"
 >
 	<a
@@ -89,6 +92,7 @@
 	</a>
 	<a
 		href={resolve('/upload')}
+		class="chrome-new-post"
 		style="background:var(--df-warm); color:white; padding:8px 16px; border-radius:999px; font-weight:600; font-size:13px; white-space:nowrap;"
 	>
 		+ New Post
@@ -103,6 +107,7 @@
 </div>
 
 <div
+	class="chrome-rail"
 	style="position:fixed; left:28px; top:50%; transform:translateY(-50%); z-index:20; display:flex; flex-direction:column; align-items:center; gap:6px; background:white; border-radius:12px; padding:10px 8px; box-shadow:var(--df-shadow-rail);"
 >
 	{#each items as { key, href, label, Icon } (key)}
@@ -129,3 +134,48 @@
 		<UserIcon size={18} weight="regular" />
 	</a>
 </div>
+
+<style>
+	@media (max-width: 640px) {
+		.chrome-logo {
+			display: none !important;
+		}
+		.chrome-pill {
+			top: auto !important;
+			bottom: 16px !important;
+			right: 16px !important;
+			padding: 6px !important;
+			border-radius: 50% !important;
+			box-shadow: var(--df-shadow-pill) !important;
+			gap: 0 !important;
+		}
+		.chrome-new-post {
+			display: none !important;
+		}
+		.chrome-rail {
+			left: 50% !important;
+			top: auto !important;
+			bottom: 16px !important;
+			right: auto !important;
+			transform: translateX(-50%) !important;
+			flex-direction: row !important;
+			border-radius: 999px !important;
+			padding: 6px 8px !important;
+			gap: 4px !important;
+		}
+		.chrome-rail > :global(a),
+		.chrome-rail > :global(div) {
+			width: auto !important;
+			height: auto !important;
+		}
+		.chrome-rail > :global(a) {
+			width: 38px !important;
+			height: 38px !important;
+		}
+		.chrome-rail > :global(div) {
+			width: 1px !important;
+			height: 20px !important;
+			margin: 0 2px !important;
+		}
+	}
+</style>

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"foliohub/internals/db"
 
@@ -75,6 +76,38 @@ func (h *Handler) ListNotifications(c *gin.Context) {
 		out = append(out, dto)
 	}
 	c.JSON(http.StatusOK, out)
+}
+
+// MarkNotificationRead marks one of the caller's notifications as read.
+// A notification belonging to another user is deliberately indistinguishable
+// from a missing notification.
+//
+//	@Summary		Mark one notification read
+//	@Tags			notifications
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			id	path	int	true	"Notification ID"
+//	@Success		204	"no content"
+//	@Router			/notifications/{id}/read [post]
+func (h *Handler) MarkNotificationRead(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		fail(c, http.StatusNotFound, "notification not found")
+		return
+	}
+
+	result := h.DB.Model(&db.Notification{}).
+		Where("id = ? AND user_id = ?", uint(id), currentUserID(c)).
+		Update("read", true)
+	if result.Error != nil {
+		failErr(c, http.StatusInternalServerError, result.Error)
+		return
+	}
+	if result.RowsAffected == 0 {
+		fail(c, http.StatusNotFound, "notification not found")
+		return
+	}
+	c.Status(http.StatusNoContent)
 }
 
 // MarkAllNotificationsRead marks every notification for the caller as read.

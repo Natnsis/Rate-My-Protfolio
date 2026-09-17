@@ -1,35 +1,52 @@
 <script lang="ts">
-	import { StackIcon, ChartBarIcon, LightningIcon, TrophyIcon, FlameIcon, ChatCircleIcon, LightbulbIcon } from 'phosphor-svelte';
 	import Screenshot from '$lib/components/Screenshot.svelte';
 
 	const features = [
 		{
-			Icon: StackIcon,
 			title: 'Version History',
 			text: 'Every redesign becomes a new version on the same portfolio, not a separate post lost in the feed.'
 		},
 		{
-			Icon: ChartBarIcon,
 			title: 'Structured Ratings',
 			text: 'Separate scores for UI, UX and code, so feedback tells you exactly what to fix next.'
 		},
 		{
-			Icon: LightningIcon,
 			title: 'AI Studio',
 			text: 'Roast, feedback or suggestions on demand. Save the good ones or share them publicly.'
 		},
 		{
-			Icon: TrophyIcon,
 			title: 'Leaderboard',
 			text: 'Every like counts toward your rank. Weekly and all-time boards keep the best work visible.'
+		}
+	];
+
+	const steps = [
+		{ num: '01', title: 'Drop your portfolio URL', text: 'We grab the screenshot automatically, or you upload your own.' },
+		{ num: '02', title: 'Devs rate it', text: 'UI, UX and code scored separately by real developers.' },
+		{ num: '03', title: 'Ship a new version', text: 'v1, v2, v3; the timeline stays on one portfolio.' },
+		{ num: '04', title: 'Climb the leaderboard', text: 'Every like counts. Weekly and all-time boards keep the best portfolios visible.' }
+	];
+
+	const modes = [
+		{
+			name: 'Roast',
+			sample: 'Six competing accent colors and a CTA that whispers. Pick one brand color and mean it.'
+		},
+		{
+			name: 'Feedback',
+			sample: 'Strong hierarchy and consistent spacing. Secondary text contrast is a touch low in dark mode.'
+		},
+		{
+			name: 'Suggestions',
+			sample: "Cut your shadow scale to two levels. Add empty and loading states, they're missing."
 		}
 	];
 </script>
 
 <div
-	style="width:100%; background:white; font-family:var(--font-sans); color:var(--df-ink);"
+	style="width:100%; background:var(--df-bg); font-family:var(--font-sans); color:var(--df-ink);"
 >
-	<div style="border-bottom:1px solid var(--df-line); background:white; position:sticky; top:0; z-index:20;">
+	<div style="border-bottom:1px solid var(--df-line); background:var(--df-bg); position:sticky; top:0; z-index:20;">
 		<div
 			style="max-width:1080px; margin:0 auto; padding:0 36px; height:64px; display:flex; align-items:center; justify-content:space-between; gap:24px;"
 		>
@@ -68,8 +85,8 @@
 			<div style="padding-top:8px;">
 				<div
 					style="font-size:14.5px; line-height:1.6; color:var(--df-muted); margin-bottom:22px; max-width:300px;"
-					>Post every version you ship. Real developers score your UI, UX and code. No vanity metrics,
-					just feedback you can act on.</div
+					>Post every version you ship, and real developers score your UI, UX and code. The result is
+					feedback you can act on.</div
 				>
 				<a
 					href="/auth"
@@ -86,7 +103,7 @@
 		/>
 	</div>
 
-	<div id="why" style="background:var(--df-bg); padding:64px 0;">
+	<div id="why" style="padding:64px 0;">
 		<div style="max-width:1080px; margin:0 auto; padding:0 36px;">
 			<div
 				style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; letter-spacing:0.04em; color:var(--df-muted); margin-bottom:26px;"
@@ -107,14 +124,11 @@
 			</div>
 
 			<div style="border-top:1px solid var(--df-line);">
-				{#each features as f}
+				{#each features as f (f.title)}
 					<div
 						style="display:grid; grid-template-columns:260px minmax(0,1fr); gap:24px; align-items:start; padding:20px 0; border-bottom:1px solid var(--df-line);"
 					>
-						<div style="display:flex; align-items:center; gap:12px;">
-							<f.Icon size={19} color="var(--df-ink)" weight="regular" />
-							<div style="font-size:15px; font-weight:700; letter-spacing:-0.015em;">{f.title}</div>
-						</div>
+						<div style="font-size:15px; font-weight:700; letter-spacing:-0.015em;">{f.title}</div>
 						<div style="font-size:13.5px; line-height:1.6; color:var(--df-muted); max-width:520px;"
 							>{f.text}</div
 						>
@@ -143,92 +157,18 @@
 			>
 		</div>
 
-		<div style="display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); grid-auto-rows:230px; gap:16px;">
-			<div
-				style="grid-column:span 2; border-radius:4px; overflow:hidden; background:var(--df-ink); display:flex; flex-direction:column;"
-			>
-				<Screenshot
-					src="/screenshots/shot-04.png"
-					alt="Upload flow screenshot"
-					shape="rect"
-					style="width:100%; flex:1; min-height:0;"
-				/>
-				<div style="padding:16px 20px 18px 20px; color:white;">
-					<div style="font-family:var(--font-mono); font-size:11.5px; color:rgba(255,255,255,0.6); margin-bottom:6px;"
-						>01</div
-					>
-					<div style="font-size:17px; font-weight:700; margin-bottom:4px; letter-spacing:-0.02em;"
-						>Drop your portfolio URL</div
-					>
-					<div style="font-size:13px; line-height:1.5; color:rgba(255,255,255,0.75);"
-						>We grab the screenshot automatically, or you upload your own.</div
-					>
+		<div style="border-top:1px solid var(--df-line);">
+			{#each steps as s (s.num)}
+				<div
+					style="display:grid; grid-template-columns:90px minmax(0,1fr); gap:24px; align-items:start; padding:20px 0; border-bottom:1px solid var(--df-line);"
+				>
+					<div style="font-family:var(--font-mono); font-size:12px; color:var(--df-muted); padding-top:2px;">{s.num}</div>
+					<div>
+						<div style="font-size:15px; font-weight:700; letter-spacing:-0.015em; margin-bottom:4px;">{s.title}</div>
+						<div style="font-size:13.5px; line-height:1.6; color:var(--df-muted); max-width:560px;">{s.text}</div>
+					</div>
 				</div>
-			</div>
-			<div
-				style="grid-column:span 1; position:relative; border-radius:4px; overflow:hidden; background:var(--df-ink); padding:22px; display:flex; flex-direction:column; justify-content:space-between; color:white;"
-			>
-				<div style="font-family:var(--font-mono); font-size:11.5px; opacity:0.6;">02</div>
-				<div>
-					<div style="font-size:17px; font-weight:700; margin-bottom:5px; letter-spacing:-0.02em;"
-						>Devs rate it</div
-					>
-					<div style="font-size:13px; line-height:1.55; opacity:0.8;"
-						>UI, UX and code scored separately by real developers.</div
-					>
-				</div>
-			</div>
-			<div style="grid-column:span 1; position:relative; border-radius:4px; overflow:hidden;">
-				<Screenshot
-					src="/screenshots/shot-05.png"
-					alt="Ratings screenshot"
-					shape="rect"
-					style="width:100%; height:100%; position:absolute; inset:0;"
-				/>
-			</div>
-
-			<div style="grid-column:span 1; position:relative; border-radius:4px; overflow:hidden;">
-				<Screenshot
-					src="/screenshots/shot-06.png"
-					alt="Version timeline screenshot"
-					shape="rect"
-					style="width:100%; height:100%; position:absolute; inset:0;"
-				/>
-			</div>
-			<div
-				style="grid-column:span 1; border-radius:4px; background:var(--df-bg); padding:22px; display:flex; flex-direction:column; justify-content:space-between;"
-			>
-				<div style="font-family:var(--font-mono); font-size:11.5px; color:var(--df-muted);">03</div>
-				<div>
-					<div style="font-size:17px; font-weight:700; margin-bottom:5px; letter-spacing:-0.02em;"
-						>Ship a new version</div
-					>
-					<div style="font-size:13px; line-height:1.55; color:var(--df-muted);"
-						>v1, v2, v3; the timeline stays on one portfolio.</div
-					>
-				</div>
-			</div>
-			<div
-				style="grid-column:span 2; border-radius:4px; overflow:hidden; background:var(--df-ink); display:flex; flex-direction:column;"
-			>
-				<Screenshot
-					src="/screenshots/shot-07.png"
-					alt="Leaderboard screenshot"
-					shape="rect"
-					style="width:100%; flex:1; min-height:0;"
-				/>
-				<div style="padding:16px 20px 18px 20px; color:white;">
-					<div style="font-family:var(--font-mono); font-size:11.5px; color:rgba(255,255,255,0.6); margin-bottom:6px;"
-						>04</div
-					>
-					<div style="font-size:17px; font-weight:700; margin-bottom:4px; letter-spacing:-0.02em;"
-						>Climb the leaderboard</div
-					>
-					<div style="font-size:13px; line-height:1.5; color:rgba(255,255,255,0.75);"
-						>Every like counts. Weekly and all-time boards keep the best portfolios visible.</div
-					>
-				</div>
-			</div>
+			{/each}
 		</div>
 	</div>
 
@@ -251,41 +191,17 @@
 					your profile, or share it to Community Roasts.</div
 				>
 			</div>
-			<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px;">
-				<div
-					style="border:1px solid rgba(255,255,255,0.18); border-radius:4px; padding:24px;"
-				>
-					<div style="display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; margin-bottom:10px; letter-spacing:-0.015em;">
-						<FlameIcon size={17} color="var(--df-warm)" weight="regular" />
-						Roast
-					</div>
-					<div style="font-size:13.5px; line-height:1.6; color:rgba(255,255,255,0.7);"
-						>"Six competing accent colors and a CTA that whispers. Pick one brand color and mean it."</div
+			<div style="border-top:1px solid rgba(255,255,255,0.15);">
+				{#each modes as m (m.name)}
+					<div
+						style="display:grid; grid-template-columns:120px minmax(0,1fr); gap:24px; align-items:start; padding:20px 0; border-bottom:1px solid rgba(255,255,255,0.15);"
 					>
-				</div>
-				<div
-					style="border:1px solid rgba(255,255,255,0.18); border-radius:4px; padding:24px;"
-				>
-					<div style="display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; margin-bottom:10px; letter-spacing:-0.015em;">
-						<ChatCircleIcon size={17} color="white" weight="regular" />
-						Feedback
+						<div style="font-size:15px; font-weight:700; letter-spacing:-0.015em;">{m.name}</div>
+						<div style="font-size:13.5px; line-height:1.6; color:rgba(255,255,255,0.7); max-width:640px;"
+							>"{m.sample}"</div
+						>
 					</div>
-					<div style="font-size:13.5px; line-height:1.6; color:rgba(255,255,255,0.7);"
-						>"Strong hierarchy and consistent spacing. Secondary text contrast is a touch low in dark
-						mode."</div
-					>
-				</div>
-				<div
-					style="border:1px solid rgba(255,255,255,0.18); border-radius:4px; padding:24px;"
-				>
-					<div style="display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; margin-bottom:10px; letter-spacing:-0.015em;">
-						<LightbulbIcon size={17} color="white" weight="regular" />
-						Suggestions
-					</div>
-					<div style="font-size:13.5px; line-height:1.6; color:rgba(255,255,255,0.7);"
-						>"Cut your shadow scale to two levels. Add empty and loading states, they're missing."</div
-					>
-				</div>
+				{/each}
 			</div>
 		</div>
 	</div>
@@ -295,29 +211,13 @@
 			style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; letter-spacing:0.04em; color:var(--df-muted); margin-bottom:26px;"
 			>/BY THE NUMBERS</div
 		>
-		<div
-			style="display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:34px; border-top:1px solid var(--df-line); padding-top:34px;"
+		<div style="border-top:1px solid var(--df-line); padding-top:20px; color:var(--df-muted); font-size:14px; line-height:1.6; max-width:560px;"
+			>Live platform stats go here once there are real numbers to show: members, versions shipped,
+			ratings given. Nothing will be invented.</div
 		>
-			<div>
-				<div style="font-size:34px; font-weight:700; letter-spacing:-0.04em; line-height:1;">12,400+</div>
-				<div style="font-size:13.5px; color:var(--df-muted); margin-top:8px;">developers posting</div>
-			</div>
-			<div>
-				<div style="font-size:34px; font-weight:700; letter-spacing:-0.04em; line-height:1;">38,000+</div>
-				<div style="font-size:13.5px; color:var(--df-muted); margin-top:8px;">versions shipped</div>
-			</div>
-			<div>
-				<div style="font-size:34px; font-weight:700; letter-spacing:-0.04em; line-height:1;">210,000+</div>
-				<div style="font-size:13.5px; color:var(--df-muted); margin-top:8px;">ratings given</div>
-			</div>
-			<div>
-				<div style="font-size:34px; font-weight:700; letter-spacing:-0.04em; line-height:1;">4.8/5</div>
-				<div style="font-size:13.5px; color:var(--df-muted); margin-top:8px;">average dev rating</div>
-			</div>
-		</div>
 	</div>
 
-	<div style="background:var(--df-bg); padding:64px 0;">
+	<div style="padding:64px 0;">
 		<div style="max-width:1080px; margin:0 auto; padding:0 36px;">
 			<div
 				style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; letter-spacing:0.04em; color:var(--df-muted); margin-bottom:26px;"

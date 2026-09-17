@@ -32,7 +32,7 @@ func (h *Handler) ListPortfolios(c *gin.Context) {
 	viewerID := currentUserID(c)
 
 	query := h.DB.Preload("User").Preload("Versions", func(tx *gorm.DB) *gorm.DB {
-		return tx.Order("versions.number ASC")
+		return tx.Order("number DESC").Limit(1)
 	})
 
 	if strings.EqualFold(c.Query("mine"), "true") {
@@ -51,28 +51,42 @@ func (h *Handler) ListPortfolios(c *gin.Context) {
 			Where("LOWER(portfolios.title) LIKE ? OR LOWER(users.name) LIKE ?", like, like)
 	}
 
+	limit := queryInt(c, "limit", 30)
+	offset := queryInt(c, "offset", 0)
+
+	sortKey := strings.ToLower(c.DefaultQuery("sort", "trending"))
+	var order string
+	switch sortKey {
+	case "latest", "newest":
+		order = "portfolios.updated_at DESC, portfolios.id DESC"
+	case "mostliked":
+		order = "(SELECT COUNT(*) FROM likes l WHERE l.portfolio_id = portfolios.id) DESC, portfolios.id DESC"
+	case "mostversions":
+		order = "(SELECT COUNT(*) FROM versions v WHERE v.portfolio_id = portfolios.id) DESC, portfolios.id DESC"
+	}
+
 	var portfolios []db.Portfolio
-	query.Find(&portfolios)
+
+	if sortKey == "trending" {
+		query.Order("(SELECT COUNT(*) FROM likes l WHERE l.portfolio_id = portfolios.id) DESC, portfolios.id DESC").
+			Limit(trendingCandidateLimit).Find(&portfolios)
+	} else {
+		query.Order(order + ", portfolios.id DESC").Limit(limit).Offset(offset).Find(&portfolios)
+	}
 
 	items := hydratePortfolios(h.DB, portfolios, viewerID)
 
-	switch strings.ToLower(c.DefaultQuery("sort", "trending")) {
-	case "latest", "newest":
-		sort.Slice(items, func(i, j int) bool { return items[i].LatestVersion.CreatedAt.After(items[j].LatestVersion.CreatedAt) })
-	case "mostliked":
-		sort.Slice(items, func(i, j int) bool { return items[i].LikeCount > items[j].LikeCount })
-	case "mostversions":
-		sort.Slice(items, func(i, j int) bool { return items[i].VersionCount > items[j].VersionCount })
-	default: // trending: recency-weighted likes
-		sort.Slice(items, func(i, j int) bool {
-			return trendingScore(items[i]) > trendingScore(items[j])
-		})
+	if sortKey == "trending" { // recency-weighted likes, computed after a bounded fetch
+		sort.Slice(items, func(i, j int) bool { return trendingScore(items[i]) > trendingScore(items[j]) })
+		items = page(items, offset, limit)
 	}
 
-	limit := queryInt(c, "limit", 30)
-	offset := queryInt(c, "offset", 0)
-	c.JSON(http.StatusOK, page(items, offset, limit))
+	c.JSON(http.StatusOK, items)
 }
+
+// trendingCandidateLimit bounds the set fetched before recency-weighting likes,
+// so trending stays accurate without loading the whole table on hot feeds.
+const trendingCandidateLimit = 300
 
 func trendingScore(p PortfolioSummary) float64 {
 	ageHours := time.Since(p.LatestVersion.CreatedAt).Hours()
@@ -152,7 +166,7 @@ func (h *Handler) CreatePortfolio(c *gin.Context) {
 		return
 	}
 	if strings.TrimSpace(req.ScreenshotURL) == "" {
-		req.ScreenshotURL = placeholderScreenshot()
+		req.ScreenshotURL = coverScreenshot(req.ProjectURL)
 	}
 
 	p := db.Portfolio{UserID: currentUserID(c), Title: req.Title, Tags: strings.Join(req.Tags, ",")}
@@ -206,9 +220,12 @@ func (h *Handler) AddVersion(c *gin.Context) {
 		return
 	}
 	if strings.TrimSpace(req.ScreenshotURL) == "" {
-		var last db.Version
-		h.DB.Where("portfolio_id = ?", p.ID).Order("number DESC").First(&last)
-		req.ScreenshotURL = last.ScreenshotURL
+		req.ScreenshotURL = coverScreenshot(req.ProjectURL)
+		if req.ScreenshotURL == "" {
+			var last db.Version
+			h.DB.Where("portfolio_id = ?", p.ID).Order("number DESC").First(&last)
+			req.ScreenshotURL = last.ScreenshotURL
+		}
 	}
 
 	var maxNumber int
@@ -231,4 +248,15 @@ var placeholderShots = []string{
 
 func placeholderScreenshot() string {
 	return placeholderShots[time.Now().UnixNano()%int64(len(placeholderShots))]
+}
+
+// coverScreenshot returns a real screenshot thumbnail of the project URL when
+// one is provided (via the free WordPress mshots service), otherwise an empty
+// string so callers can fall back to a placeholder.
+func coverScreenshot(projectURL string) string {
+	url := strings.TrimSpace(projectURL)
+	if url == "" || !(strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://")) {
+		return ""
+	}
+	return "https://s.wordpress.com/mshots/v1/" + url + "?w=640"
 }

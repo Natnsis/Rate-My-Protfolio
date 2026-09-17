@@ -114,6 +114,12 @@
 							style="position:absolute; top:16px; left:16px; background:var(--df-ink); color:white; font-family:var(--font-mono); font-size:11px; font-weight:500; letter-spacing:0.06em; padding:7px 14px; border-radius:999px;"
 							>TODAY'S TOP VERSION</div
 						>
+						{#if hero.demo}
+							<div
+								style="position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.94); border:1px solid var(--df-line); color:var(--df-muted); font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.04em; padding:6px 12px; border-radius:999px;"
+								>sample data</div
+							>
+						{/if}
 					</div>
 					<div style="padding:22px 24px 24px 24px; display:flex; flex-direction:column; flex:1;">
 						<div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
@@ -243,7 +249,7 @@
 							>
 						</div>
 					{:else}
-						<div style="font-size:14px; color:var(--df-muted);">No roasts posted yet — be the first to leave one.</div>
+						<div style="font-size:14px; color:var(--df-muted);">No roasts posted yet. Be the first to leave one.</div>
 					{/if}
 				</a>
 
@@ -263,6 +269,12 @@
 								style="position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.94); font-family:var(--font-mono); font-size:11px; font-weight:500; padding:5px 11px; border-radius:999px;"
 								>{post.latestVersion.label}</div
 							>
+							{#if post.demo}
+								<div
+									style="position:absolute; top:12px; left:12px; background:rgba(255,255,255,0.94); border:1px solid var(--df-line); color:var(--df-muted); font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.04em; padding:5px 11px; border-radius:999px;"
+									>sample data</div
+								>
+							{/if}
 						</div>
 						<div style="padding:16px 18px 16px 18px; display:flex; flex-direction:column; flex:1;">
 							<div
@@ -320,6 +332,7 @@
 		max-width: 1320px;
 		margin: 0 auto;
 		padding: 56px 48px 64px 48px;
+		--hd-offset: 76px;
 	}
 	.feed-header {
 		display: grid;
@@ -327,10 +340,18 @@
 		gap: 48px;
 		align-items: end;
 		margin-bottom: 30px;
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 20px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
 	}
 	@media (max-width: 900px) {
 		.page-container {
 			padding: 32px 24px 48px 24px;
+			--hd-offset: 60px;
 		}
 		.feed-header {
 			grid-template-columns: 1fr;
@@ -341,6 +362,7 @@
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 24px 16px 40px 16px;
+			--hd-offset: 56px;
 		}
 	}
 	@media (max-width: 720px) {

@@ -10,6 +10,7 @@
 	} from 'phosphor-svelte';
 	import { auth } from '$lib/auth.svelte';
 	import { apiFetch, ApiError } from '$lib/api';
+	import Markdown from '$lib/components/Markdown.svelte';
 	import type { PortfolioSummary } from '$lib/types';
 
 	const ink = 'var(--df-ink)';
@@ -273,7 +274,7 @@
 								</button>
 							</div>
 						</div>
-						<div style="font-size:14.5px; line-height:1.65;">{m.text}</div>
+						<Markdown text={m.text} />
 					</div>
 				{/each}
 
@@ -325,6 +326,7 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 56px 48px 64px 48px;
+		--hd-offset: 76px;
 	}
 	.studio-hero {
 		display: grid;
@@ -332,10 +334,18 @@
 		gap: 48px;
 		align-items: center;
 		margin-bottom: 34px;
+		position: sticky;
+		top: 0;
+		z-index: 6;
+		background: var(--df-bg);
+		padding: var(--hd-offset) 0 28px;
+		margin-top: calc(-1 * (var(--hd-offset) - 20px));
+		box-shadow: 0 1px 0 0 var(--df-line);
 	}
 	@media (max-width: 900px) {
 		.page-container {
 			padding: 32px 24px 48px 24px;
+			--hd-offset: 60px;
 		}
 		.studio-hero {
 			grid-template-columns: 1fr;
@@ -350,6 +360,7 @@
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 24px 16px 40px 16px;
+			--hd-offset: 56px;
 		}
 	}
 </style>
