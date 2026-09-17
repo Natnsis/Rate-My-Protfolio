@@ -20,6 +20,6 @@ describe('Screenshot.svelte', () => {
 		const { container } = render(Screenshot, { shape: 'circle' });
 		const el = container.querySelector('div');
 		await expect.element(page.getByText('Drop an image')).toBeInTheDocument();
-		await expect.element(el).toHaveStyle({ 'border-radius': '50%' });
+		await expect.element(el).toHaveStyle({ borderRadius: '50%' });
 	});
 });

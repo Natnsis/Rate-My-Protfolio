@@ -47,8 +47,8 @@ func TestLoadDefaults(t *testing.T) {
 		if cfg.AIModel != "openai/gpt-oss-120b" {
 			t.Errorf("AIModel = %q, want openai/gpt-oss-120b", cfg.AIModel)
 		}
-		if len(cfg.CORSOrigins) != 2 {
-			t.Errorf("CORSOrigins = %v, want 2 defaults", cfg.CORSOrigins)
+		if len(cfg.CORSOrigins) != 4 {
+			t.Errorf("CORSOrigins = %v, want 4 defaults", cfg.CORSOrigins)
 		}
 	})
 }

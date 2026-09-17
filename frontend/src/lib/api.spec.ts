@@ -47,7 +47,7 @@ describe('apiFetch', () => {
 
 		const [, init] = vi.mocked(fetch).mock.calls[0];
 		expect(init?.method).toBe('POST');
-		expect(init?.headers?.['Content-Type']).toBe('application/json');
+		expect((init?.headers as Record<string, string>)?.['Content-Type']).toBe('application/json');
 		expect(init?.body).toBe('{"title":"Port"}');
 	});
 
@@ -57,7 +57,7 @@ describe('apiFetch', () => {
 		await apiFetch('/auth/me');
 
 		const [, init] = vi.mocked(fetch).mock.calls[0];
-		expect(init?.headers?.['Authorization']).toBe('Bearer jwt-token');
+		expect((init?.headers as Record<string, string>)?.['Authorization']).toBe('Bearer jwt-token');
 	});
 
 	it('omits the token when auth is disabled', async () => {
@@ -66,7 +66,7 @@ describe('apiFetch', () => {
 		await apiFetch('/healthz', { auth: false });
 
 		const [, init] = vi.mocked(fetch).mock.calls[0];
-		expect(init?.headers?.['Authorization']).toBeUndefined();
+		expect((init?.headers as Record<string, string>)?.['Authorization']).toBeUndefined();
 	});
 
 	it('returns null for a 204', async () => {
@@ -75,7 +75,9 @@ describe('apiFetch', () => {
 	});
 
 	it('throws ApiError carrying the server message', async () => {
-		vi.mocked(fetch).mockResolvedValueOnce(await jsonResponse(422, { error: 'mode must be roast, feedback or suggestions' }));
+		vi.mocked(fetch).mockResolvedValueOnce(
+			await jsonResponse(422, { error: 'mode must be roast, feedback or suggestions' })
+		);
 		const err = await apiFetch('/ai/generate', { method: 'POST', body: {} }).catch((e) => e);
 		expect(err).toBeInstanceOf(ApiError);
 		expect((err as ApiError).status).toBe(422);
@@ -84,14 +86,14 @@ describe('apiFetch', () => {
 
 	it('falls back to a generic message when the body has no error field', async () => {
 		vi.mocked(fetch).mockResolvedValueOnce(await jsonResponse(404, { detail: 'nope' }));
-		const err = await apiFetch('/portfolios/99').catch((e) => e) as ApiError;
+		const err = (await apiFetch('/portfolios/99').catch((e) => e)) as ApiError;
 		expect(err.status).toBe(404);
 		expect(err.message).toContain('404');
 	});
 
 	it('throws ApiError status 0 on network failure', async () => {
 		vi.mocked(fetch).mockRejectedValueOnce(new TypeError('fetch failed'));
-		const err = await apiFetch('/portfolios').catch((e) => e) as ApiError;
+		const err = (await apiFetch('/portfolios').catch((e) => e)) as ApiError;
 		expect(err.status).toBe(0);
 	});
 });

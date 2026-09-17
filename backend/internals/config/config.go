@@ -50,7 +50,7 @@ func Load() Config {
 		cfg.JWTExpiry = 7 * 24 * time.Hour
 	}
 
-	origins := getEnv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+	origins := getEnv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173")
 	for _, o := range strings.Split(origins, ",") {
 		o = strings.TrimSpace(o)
 		if o != "" {
