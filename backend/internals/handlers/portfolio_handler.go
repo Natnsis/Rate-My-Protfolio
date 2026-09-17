@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"sort"
 	"strconv"
@@ -179,6 +180,7 @@ func (h *Handler) CreatePortfolio(c *gin.Context) {
 		failErr(c, http.StatusInternalServerError, err)
 		return
 	}
+	h.evaluateVersionAsync(v.ID, p.Title, req.ProjectURL, strings.Join(req.Tags, ","), req.Note)
 
 	h.DB.Preload("User").First(&p, p.ID)
 	p.Versions = []db.Version{v} // hydratePortfolios needs at least one version to build a summary
@@ -237,7 +239,24 @@ func (h *Handler) AddVersion(c *gin.Context) {
 		return
 	}
 	h.DB.Model(&p).Update("updated_at", time.Now())
+	h.evaluateVersionAsync(v.ID, p.Title, req.ProjectURL, p.Tags, req.Note)
 	c.JSON(http.StatusCreated, toVersionDTO(v))
+}
+
+// evaluateVersionAsync keeps publishing fast while allowing scores to appear
+// as soon as the AI provider responds. A failed evaluation leaves scores at 0.
+func (h *Handler) evaluateVersionAsync(versionID uint, title, projectURL, tags, note string) {
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		scores, err := h.AI.Evaluate(ctx, title, projectURL, tags, note)
+		if err != nil {
+			return
+		}
+		h.DB.Model(&db.Version{}).Where("id = ?", versionID).Updates(map[string]any{
+			"ui_rating": scores.UI, "ux_rating": scores.UX, "code_rating": scores.Code,
+		})
+	}()
 }
 
 var placeholderShots = []string{

@@ -10,6 +10,11 @@
 	let email = $state('');
 	let password = $state('');
 	let submitting = $state(false);
+	let usernameFocused = $state(false);
+	let nameFocused = $state(false);
+	let emailFocused = $state(false);
+	let passwordFocused = $state(false);
+	let passwordVisible = $state(false);
 
 	const isSignup = $derived(authMode === 'signup');
 	const ink = 'var(--df-ink)';
@@ -75,65 +80,70 @@
 
 			<div style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
 				{#if isSignup}
-					<div style="position:relative;">
-						<label
-							for="username"
-							style="position:absolute; top:-7px; left:12px; background:white; padding:0 6px; font-size:11.5px; color:var(--df-muted);"
-							>Username</label
-						>
+					<div class:active={usernameFocused || username.length > 0} class="auth-field">
+						<label for="username">Username</label>
 						<input
 							id="username"
 							bind:value={username}
+							onfocus={() => (usernameFocused = true)}
+							onblur={() => (usernameFocused = false)}
 							required
 							minlength="3"
-							placeholder="yourhandle"
-							style="width:100%; box-sizing:border-box; padding:14px 14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
+							placeholder={usernameFocused ? 'yourhandle' : 'Username'}
+							style="width:100%; box-sizing:border-box; padding:14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
 						/>
 					</div>
-					<div style="position:relative;">
-						<label
-							for="name"
-							style="position:absolute; top:-7px; left:12px; background:white; padding:0 6px; font-size:11.5px; color:var(--df-muted);"
-							>Name</label
-						>
+					<div class:active={nameFocused || name.length > 0} class="auth-field">
+						<label for="name">Name</label>
 						<input
 							id="name"
 							bind:value={name}
-							placeholder="Your name"
-							style="width:100%; box-sizing:border-box; padding:14px 14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
+							onfocus={() => (nameFocused = true)}
+							onblur={() => (nameFocused = false)}
+							placeholder={nameFocused ? 'Your name' : 'Name'}
+							style="width:100%; box-sizing:border-box; padding:14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
 						/>
 					</div>
 				{/if}
-				<div style="position:relative;">
-					<label
-						for="email"
-						style="position:absolute; top:-7px; left:12px; background:white; padding:0 6px; font-size:11.5px; color:var(--df-muted);"
-						>Email</label
-					>
+				<div class:active={emailFocused || email.length > 0} class="auth-field">
+					<label for="email">Email</label>
 					<input
 						id="email"
 						type="email"
 						bind:value={email}
+						onfocus={() => (emailFocused = true)}
+						onblur={() => (emailFocused = false)}
 						required
-						placeholder="you@email.com"
-						style="width:100%; box-sizing:border-box; padding:14px 14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
+						placeholder={emailFocused ? 'you@email.com' : 'Email'}
+						style="width:100%; box-sizing:border-box; padding:14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
 					/>
 				</div>
-				<div style="position:relative;">
-					<label
-						for="password"
-						style="position:absolute; top:-7px; left:12px; background:white; padding:0 6px; font-size:11.5px; color:var(--df-muted);"
-						>Password</label
-					>
+				<div class:active={passwordFocused || password.length > 0} class="auth-field">
+					<label for="password">Password</label>
 					<input
 						id="password"
-						type="password"
+						type={passwordVisible ? 'text' : 'password'}
 						bind:value={password}
+						onfocus={() => (passwordFocused = true)}
+						onblur={() => (passwordFocused = false)}
 						required
 						minlength="8"
-						placeholder="••••••••••••"
-						style="width:100%; box-sizing:border-box; padding:14px 14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
+						placeholder={passwordFocused ? '••••••••••••' : 'Password'}
+						style="width:100%; box-sizing:border-box; padding:14px 46px 14px 14px; border-radius:8px; border:1px solid var(--df-line); font-size:14px; outline:none; background:white;"
 					/>
+					<button
+						type="button"
+						class="password-toggle"
+						onclick={() => (passwordVisible = !passwordVisible)}
+						aria-label={passwordVisible ? 'Hide password' : 'Show password'}
+						aria-pressed={passwordVisible}
+					>
+						{#if passwordVisible}
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2 2 0 0 0 2.7 2.7M9.9 4.2A10.8 10.8 0 0 1 12 4c5.5 0 9.5 5.1 9.5 8s-1.3 3.5-3.1 5M6.2 6.2C3.9 7.9 2.5 10.3 2.5 12c0 2.9 4 8 9.5 8 1.5 0 2.8-.4 4-1" /></svg>
+						{:else}
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6.5 4 12 4s9.5 8 9.5 8-4 8-9.5 8-9.5-8-9.5-8Z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /></svg>
+						{/if}
+					</button>
 				</div>
 			</div>
 
@@ -189,6 +199,72 @@
 </div>
 
 <style>
+	.auth-field {
+		position: relative;
+	}
+
+	.auth-field label {
+		position: absolute;
+		z-index: 1;
+		top: 14px;
+		left: 14px;
+		padding: 0 4px;
+		background: white;
+		font-size: 14px;
+		color: var(--df-muted);
+		pointer-events: none;
+		transition: top 150ms ease, font-size 150ms ease, color 150ms ease;
+	}
+
+	.auth-field.active label {
+		top: -7px;
+		left: 12px;
+		font-size: 11.5px;
+	}
+
+	.auth-field input::placeholder {
+		color: transparent;
+	}
+
+	.auth-field.active input::placeholder {
+		color: var(--df-muted);
+	}
+
+	.password-toggle {
+		position: absolute;
+		top: 50%;
+		right: 12px;
+		z-index: 2;
+		display: grid;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		place-items: center;
+		transform: translateY(-50%);
+		border: 0;
+		border-radius: 4px;
+		background: transparent;
+		color: var(--df-muted);
+		cursor: pointer;
+	}
+
+	.password-toggle:hover,
+	.password-toggle:focus-visible {
+		color: var(--df-ink);
+		background: var(--df-bg);
+		outline: none;
+	}
+
+	.password-toggle svg {
+		width: 18px;
+		height: 18px;
+		fill: none;
+		stroke: currentColor;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-width: 1.8;
+	}
+
 	@media (max-width: 820px) {
 		.auth-card {
 			grid-template-columns: 1fr !important;
@@ -202,4 +278,3 @@
 		}
 	}
 </style>
-

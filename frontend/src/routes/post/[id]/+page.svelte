@@ -146,13 +146,23 @@
 					</div>
 
 					<div style="padding:0 22px 18px 22px;">
-						<Screenshot
-							src={version.screenshotUrl}
-							alt="Screenshot"
-							shape="rounded"
-							radius={14}
-							style="width:100%; height:300px;"
-						/>
+						{#if version.projectUrl}
+							<div class="live-preview">
+								<iframe src={version.projectUrl} title={`${post.title} live preview`}></iframe>
+								<div class="live-preview-note">
+									<span>Live portfolio preview</span>
+									<a href={version.projectUrl} target="_blank" rel="noreferrer">Open in new tab ↗</a>
+								</div>
+							</div>
+						{:else}
+							<Screenshot
+								src={version.screenshotUrl}
+								alt="Screenshot"
+								shape="rounded"
+								radius={14}
+								style="width:100%; height:300px;"
+							/>
+						{/if}
 					</div>
 
 					{#if version.note}
@@ -257,10 +267,40 @@
 		margin: 0 auto;
 		padding: 56px 40px 64px 40px;
 	}
+	.live-preview {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--df-line);
+		border-radius: 14px;
+		background: white;
+	}
+	.live-preview iframe {
+		display: block;
+		width: 100%;
+		height: 460px;
+		border: 0;
+		background: white;
+	}
+	.live-preview-note {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 10px 14px;
+		border-top: 1px solid var(--df-line);
+		font-size: 12px;
+		color: var(--df-muted);
+	}
+	.live-preview-note a {
+		font-weight: 600;
+		color: var(--df-accent);
+	}
 	@media (max-width: 640px) {
 		.page-container {
 			padding: 28px 16px 40px 16px;
 		}
+		.live-preview iframe {
+			height: 360px;
+		}
 	}
 </style>
-
